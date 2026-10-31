@@ -3,6 +3,7 @@
 Ажиллуулах (prj1/B190910014/python хавтаснаас): python3 bench.py
 Үр дүн: ../out/results_python.tsv
 """
+import gc
 import random
 import statistics
 import sys
@@ -26,11 +27,22 @@ rng = random.Random(14)
 
 def measure(fn, repeats: int = 3) -> tuple[float, float]:
     """(хугацааны медиан ms, санах ойн оргил KB). Санах ойг тусад нь хэмжинэ."""
+    gc.collect()  # өмнөх хэмжилтийн хог энэ хэмжилтэд орохгүй
+    # Нэг багц ≥ 20 ms байхаар давталтын тоог сонгоно (жижиг оролтын хэлбэлзлийг бууруулна).
+    iters = 1
+    while True:
+        t0 = time.perf_counter()
+        for _ in range(iters):
+            fn()
+        if time.perf_counter() - t0 >= 0.02 or iters >= 1 << 16:
+            break
+        iters *= 2
     times = []
     for _ in range(repeats):
         t0 = time.perf_counter()
-        fn()
-        times.append((time.perf_counter() - t0) * 1000)
+        for _ in range(iters):
+            fn()
+        times.append((time.perf_counter() - t0) * 1000 / iters)
     tracemalloc.start()
     fn()
     _, peak = tracemalloc.get_traced_memory()
@@ -46,8 +58,11 @@ def majority_input(n: int) -> list[int]:
     return nums
 
 
-def nice_input(n: int) -> str:
-    return "".join(rng.choice("abcdeABCDE") for _ in range(n))
+def nice_input(n: int, split: bool) -> str:
+    """split=False: бүх үсэг хоёр хэлбэрээр — мөр бүхэлдээ сайхан.
+    split=True: «z» үсгийн том хэлбэр байхгүй тул түүгээр олон хуваалт хийгдэнэ."""
+    alphabet = "abcdeABCDE" + ("z" if split else "")
+    return "".join(rng.choice(alphabet) for _ in range(n))
 
 
 def expression(k: int) -> str:
@@ -93,8 +108,9 @@ def main() -> None:
         record("p2", "basic", "sorted", n, lambda: SortedToBst().sortedArrayToBST(nums))
 
     for n in (10**2, 10**3, 10**4, 10**5):
-        s = nice_input(n)
-        record("p3", "dc", "random", n, lambda: Nice().longestNiceSubstring(s))
+        for case in ("nice", "split"):
+            s = nice_input(n, case == "split")
+            record("p3", "dc", case, n, lambda: Nice().longestNiceSubstring(s))
 
     for k in range(2, 11):
         expr = expression(k)

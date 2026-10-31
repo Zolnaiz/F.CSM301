@@ -11,6 +11,7 @@
 | [Лаб 1](lab01/B190910014) | Орчин бэлтгэх, Фибоначчи, анаграмм | [lab01_report.md](lab01/B190910014/lab01_report.md) | [!61](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/61) | ✅ merged |
 | [Лаб 2](lab02/B190910014) | Эрэмбэлэлт, хоёртын хайлт, дарааллын зөрөө | [lab02_report.md](lab02/B190910014/lab02_report.md) | [!60](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/60) | ✅ merged |
 | [Лаб 3](lab03/B190910014) | Ерөнхий арга, матриц үржүүлэх, Штрассен, Гаусс | [lab03_report.md](lab03/B190910014/lab03_report.md) | [!146](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/146) | ⏳ хүлээгдэж буй |
+| [Бие даалт 1](prj1/B190910014) | Хэсэгчлэх ба дахин дуудах арга, A түвшин (5 бодлого + 2 сайжруулалт) | [prj1_report.pdf](prj1/B190910014/report/prj1_report.pdf) | [!153](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/153) | ⏳ хүлээгдэж буй |
 
 Шалгуулах бэлтгэл: [шалгуулах_бэлтгэл.md](шалгуулах_бэлтгэл.md)
 

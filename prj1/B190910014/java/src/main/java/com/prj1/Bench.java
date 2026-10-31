@@ -23,16 +23,24 @@ public final class Bench {
 
     private static void record(String problem, String variant, String kase, int n,
                                Supplier<Object> fn, String extra) {
-        for (int i = 0; i < 5; i++) fn.get(); // JIT халаах
+        // JIT халаах ба багцын хэмжээг сонгох: нэг багц ≥ 20 ms байхаар давталтын тоог өсгөнө.
+        System.gc(); // өмнөх хэмжилтийн хог энэ хэмжилтэд орохгүй
+        int iters = 1;
+        while (true) {
+            long t0 = System.nanoTime();
+            for (int i = 0; i < iters; i++) fn.get();
+            if (System.nanoTime() - t0 >= 20_000_000L || iters >= 1 << 20) break;
+            iters *= 2;
+        }
+        long tid = Thread.currentThread().getId();
         double[] times = new double[5];
         long allocated = 0;
-        for (int i = 0; i < times.length; i++) {
-            long tid = Thread.currentThread().getId();
+        for (int b = 0; b < times.length; b++) {
             long a0 = THREADS.getThreadAllocatedBytes(tid);
             long t0 = System.nanoTime();
-            fn.get();
-            times[i] = (System.nanoTime() - t0) / 1e6;
-            allocated = THREADS.getThreadAllocatedBytes(tid) - a0;
+            for (int i = 0; i < iters; i++) fn.get();
+            times[b] = (System.nanoTime() - t0) / 1e6 / iters; // нэг дуудалтын дундаж
+            allocated = (THREADS.getThreadAllocatedBytes(tid) - a0) / iters;
         }
         Arrays.sort(times);
         double ms = times[times.length / 2];
@@ -53,8 +61,10 @@ public final class Bench {
             record("p2", "basic", "sorted", n, () -> new SortedArrayToBst().sortedArrayToBST(nums), "");
         }
         for (int n : new int[] {100, 1_000, 10_000, 100_000}) {
-            String s = niceInput(n);
-            record("p3", "dc", "random", n, () -> new LongestNiceSubstring().longestNiceSubstring(s), "");
+            for (String kase : new String[] {"nice", "split"}) {
+                String s = niceInput(n, kase.equals("split"));
+                record("p3", "dc", kase, n, () -> new LongestNiceSubstring().longestNiceSubstring(s), "");
+            }
         }
         for (int k = 2; k <= 10; k++) {
             String expr = expression(k);
@@ -90,8 +100,9 @@ public final class Bench {
         return list.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    private static String niceInput(int n) {
-        String alphabet = "abcdeABCDE";
+    /** split=true: «z» үсгийн том хэлбэр байхгүй тул түүгээр олон хуваалт хийгдэнэ. */
+    private static String niceInput(int n, boolean split) {
+        String alphabet = split ? "abcdeABCDEz" : "abcdeABCDE";
         StringBuilder sb = new StringBuilder(n);
         for (int i = 0; i < n; i++) sb.append(alphabet.charAt(RNG.nextInt(alphabet.length())));
         return sb.toString();
