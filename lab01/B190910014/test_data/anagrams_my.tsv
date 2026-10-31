@@ -1,0 +1,14 @@
+words	expected
+eat,tea,tan	eat,tea
+listen,silent,enlist,google,gooegl	listen,silent,enlist;google,gooegl
+Aa,aA,aa	Aa,aA
+abc,def,ghi	
+x	
+aab,aba,baa,abb,bab	aab,aba,baa;abb,bab
+a,b,a,c,b	a,a;b,b
+abc,abcd,dcba,cba	abc,cba;abcd,dcba
+Tea,Eat,ate,eta	ate,eta
+stop,pots,tops,spot,opts,post	stop,pots,tops,spot,opts,post
+ab,ba,ab	ab,ba,ab
+123,321,213,12	123,321,213
+нар,ран,бат,тба,нар	нар,ран,нар;бат,тба

@@ -1,0 +1,6 @@
+words	expected
+eat,tea,tan,ate,nat,bat	eat,tea,ate;tan,nat
+abc,cba	abc,cba
+abc,def	
+a,a,a	a,a,a
+listen,silent	listen,silent

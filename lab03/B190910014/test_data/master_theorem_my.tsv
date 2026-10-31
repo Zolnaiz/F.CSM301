@@ -1,0 +1,9 @@
+id	case	solution
+R1	2	Theta(nlgn)
+R2	2	Theta(lgn)
+R3	1	Theta(n^3)
+R4	3	Theta(n^2)
+R5	2	Theta(n^2 lgn)
+R6	0	-
+R7	1	Theta(n^lg7)
+R8	2	Theta(nlg^2 n)
