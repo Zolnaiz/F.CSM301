@@ -42,5 +42,28 @@ public final class MatrixChain {
         sb.append(')');
     }
 
+    public record RecursiveResult(long minMults, long calls) {}
+
+    /**
+     * Энгийн шийдэл: Recursive-Matrix-Chain (CLRS 14.3), хүснэгтгүй дахин дуудалт.
+     * Ижил дэд бодлогыг олон дахин бодох тул дуудалт яг 3^(n−1) = Ω(2ⁿ).
+     */
+    public static RecursiveResult recursive(int[] p) {
+        long[] calls = new long[1];
+        long cost = rec(p, 1, p.length - 1, calls);
+        return new RecursiveResult(cost, calls[0]);
+    }
+
+    private static long rec(int[] p, int i, int j, long[] calls) {
+        calls[0]++;
+        if (i == j) return 0;
+        long best = Long.MAX_VALUE;
+        for (int k = i; k < j; k++) {
+            long q = rec(p, i, k, calls) + rec(p, k + 1, j, calls) + (long) p[i - 1] * p[k] * p[j];
+            if (q < best) best = q;
+        }
+        return best;
+    }
+
     private MatrixChain() {}
 }
