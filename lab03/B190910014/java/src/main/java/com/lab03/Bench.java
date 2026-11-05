@@ -47,7 +47,8 @@ public final class Bench {
                     stopped.add(alg.name());
                     continue;
                 }
-                int repeats = n <= 128 ? 3 : 1;
+                int repeats = predicted < 5_000 ? 5 : 3; // медиан (JIT, GC-ийн хэлбэлзлийг дарна)
+                if (predicted < 5_000) alg.fn().apply(ab[0], ab[1]); // энэ n дээр JIT-ийг халаах, хэмжихгүй
                 double[] times = new double[repeats];
                 MatrixMultiply.Result r = null;
                 for (int i = 0; i < repeats; i++) {
