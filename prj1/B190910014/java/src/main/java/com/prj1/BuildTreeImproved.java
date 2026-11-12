@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * LeetCode 105 — сайжруулсан (A түвшин). inorder-ийн утга → товъёгийг хэш хүснэгтэд хадгалж
+ * LeetCode 105 — сайжруулсан (A төвшин). inorder-ийн утга → товъёгийг тольд (HashMap) хадгалж
  * (хайлт Θ(1)), массив хуулахгүй, зөвхөн товъёгоор дамжуулна. Хугацаа, санах ой Θ(n).
  */
 public class BuildTreeImproved {

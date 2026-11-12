@@ -3,7 +3,7 @@ package com.prj1;
 import java.util.ArrayList;
 import java.util.List;
 
-/** LeetCode 241 (B түвшин). Үйлдэл бүрээр хоёр хувааж, хоёр талын бүх хариуг хослуулна. */
+/** LeetCode 241 (B төвшин). Үйлдэл бүрээр хоёр хувааж, хоёр талын бүх хариуг хослуулна. */
 public class DifferentWays {
 
     /** Дахин дуудалтын тоо (хэмжилтэд). */

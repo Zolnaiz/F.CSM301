@@ -1,4 +1,4 @@
-"""LeetCode 105. Construct Binary Tree from Preorder and Inorder Traversal (B түвшин) —
+"""LeetCode 105. Construct Binary Tree from Preorder and Inorder Traversal (B төвшин) —
 https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
 """
 import sys

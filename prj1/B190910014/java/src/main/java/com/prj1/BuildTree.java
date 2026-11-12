@@ -3,7 +3,7 @@ package com.prj1;
 import java.util.Arrays;
 
 /**
- * LeetCode 105 (B түвшин). preorder[0] нь үндэс; түүнийг inorder-оос шугаман хайлтаар олж,
+ * LeetCode 105 (B төвшин). preorder[0] нь үндэс; түүнийг inorder-оос шугаман хайлтаар олж,
  * массивыг хуулж хуваана. Хамгийн муу үед T(n) = T(n−1) + Θ(n) = Θ(n²) хугацаа, санах ой.
  */
 public class BuildTree {

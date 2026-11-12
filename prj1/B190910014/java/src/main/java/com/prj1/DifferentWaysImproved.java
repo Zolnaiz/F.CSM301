@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * LeetCode 241 — сайжруулсан (A түвшин). Илэрхийллийг нэг удаа задалж, дэд бодлогыг операндын
+ * LeetCode 241 — сайжруулсан (A төвшин). Илэрхийллийг нэг удаа задалж, дэд бодлогыг операндын
  * товъёгийн муж (i, j)-ээр тодорхойлж, хариуг санана. Өөр дэд бодлого (k+1)(k+2)/2.
  */
 public class DifferentWaysImproved {
@@ -37,7 +37,7 @@ public class DifferentWaysImproved {
         return compute(0, nums.length - 1);
     }
 
-    /** nums[i..j] операндуудыг хаалтлах бүх аргын утга. */
+    /** nums[i..j] операндуудад хаалт тавих бүх аргын утга. */
     private List<Integer> compute(int i, int j) {
         if (memo[i][j] != null) return memo[i][j];
         calls++;

@@ -1,4 +1,4 @@
-"""LeetCode 241. Different Ways to Add Parentheses (B түвшин) —
+"""LeetCode 241. Different Ways to Add Parentheses (B төвшин) —
 https://leetcode.com/problems/different-ways-to-add-parentheses/
 """
 from typing import List

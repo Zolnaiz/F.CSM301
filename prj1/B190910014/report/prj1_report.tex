@@ -1,0 +1,628 @@
+% Бие даалт №1 — B190910014 (Б. Билгүүн). F.CSM301 Алгоритмын зохиомж ба шинжилгээ.
+% Хөрвүүлэх: ./build.sh (pdflatex, 2 удаа). Хэмжилтийн хүснэгтүүдийг (% BEGIN … % END)
+% python3 make_tables.py нь ../out/results_*.tsv-ээс шинэчилнэ.
+\documentclass[11pt,a4paper]{article}
+\usepackage{cmap} % PDF-ээс кирилл текстийг зөв хуулах (ToUnicode)
+\input{glyphtounicode}
+\pdfgentounicode=1 % математик тэмдэгт (ϵ, Θ, ≤ …)-ийг ч зөв хуулах
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[mongolian]{babel}
+\usepackage[a4paper,margin=20mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,tabularx}
+\usepackage{fancyvrb}
+\usepackage{pmboxdraw}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[unicode,hidelinks]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\fvset{fontsize=\small,frame=single,framesep=2mm,rulecolor=\color{gray}}
+\renewcommand{\arraystretch}{1.15}
+\emergencystretch=3em
+% Үгийг мөрийн төгсгөлд таслахгүй: PDF-ээс хуулсан текстэд «ха-», «рийг» гэх мэт хэсэг үүсгэхгүй
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+% Тайланд орсон тусгай тэмдэгтүүд
+\DeclareUnicodeCharacter{0398}{\ensuremath{\Theta}}
+\DeclareUnicodeCharacter{03A3}{\ensuremath{\Sigma}}
+\DeclareUnicodeCharacter{03A9}{\ensuremath{\Omega}}
+\DeclareUnicodeCharacter{03C0}{\ensuremath{\pi}}
+\DeclareUnicodeCharacter{03F5}{\ensuremath{\varepsilon}}
+\DeclareUnicodeCharacter{00B2}{\textsuperscript{2}}
+\DeclareUnicodeCharacter{00B3}{\textsuperscript{3}}
+\DeclareUnicodeCharacter{2074}{\textsuperscript{4}}
+\DeclareUnicodeCharacter{2075}{\textsuperscript{5}}
+\DeclareUnicodeCharacter{2076}{\textsuperscript{6}}
+\DeclareUnicodeCharacter{1D4F}{\textsuperscript{k}}
+\DeclareUnicodeCharacter{1D62}{\textsubscript{i}}
+\DeclareUnicodeCharacter{2C7C}{\textsubscript{j}}
+\DeclareUnicodeCharacter{2096}{\textsubscript{k}}
+\DeclareUnicodeCharacter{2080}{\textsubscript{0}}
+\DeclareUnicodeCharacter{2082}{\textsubscript{2}}
+\DeclareUnicodeCharacter{208C}{\textsubscript{=}}
+\DeclareUnicodeCharacter{00B7}{\ensuremath{\cdot}}
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
+\DeclareUnicodeCharacter{221A}{\ensuremath{\surd}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}
+\DeclareUnicodeCharacter{226B}{\ensuremath{\gg}}
+\DeclareUnicodeCharacter{2308}{\ensuremath{\lceil}}
+\DeclareUnicodeCharacter{2309}{\ensuremath{\rceil}}
+\DeclareUnicodeCharacter{230A}{\ensuremath{\lfloor}}
+\DeclareUnicodeCharacter{230B}{\ensuremath{\rfloor}}
+\DeclareUnicodeCharacter{2026}{\ensuremath{\ldots}}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{35mm}
+{\LARGE\bfseries Бие даалт №1\par}
+\vspace{4mm}
+{\Large\bfseries Хэсэгчлэх ба дахин дуудах арга\par}
+\vspace{12mm}
+{\large Алгоритмын зохиомж ба шинжилгээ (F.CSM301)\par}
+\vspace{6mm}
+{\large A төвшин $\cdot$ Python, Java\par}
+\vfill
+{\large Оюутан: Б.~Билгүүн (\textbf{B190910014})\par}
+\vspace{3mm}
+{\large Багш: Д.~Батмөнх\par}
+\vspace{20mm}
+ШУТИС, МХТС $\cdot$ Улаанбаатар, 2026\par
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\section{Ерөнхий мэдээлэл}
+
+\subsection{Ажлын зорилго}
+Хэсэгчлэх аргаар бодлогыг дэд бодлогод хувааж, дэд бодлогыг дахин дуудалтаар бодож, шийдүүдийг нэгтгэх зарчмыг хэрэгжүүлэх. A төвшний шаардлагын дагуу таван бодлогыг бүгдийг \textbf{Python} болон \textbf{Java} дээр бодож, 4 ба 5-р бодлогын гүйцэтгэлийг \textbf{сайжруулав}. Бодлого бүрийн хугацаа, санах ойн зарцуулалтыг онолоор тооцоолж, бодит хэмжилтээр шалгав.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}Xll}
+\toprule
+\textbf{№} & \textbf{Бодлого} & \textbf{Төвшин} & \textbf{Арга} \\
+\midrule
+1 & Majority Element (LeetCode 169) & C & хэсэгчлэх \\
+2 & Convert Sorted Array to Binary Search Tree (LeetCode 108) & C & дахин дуудах \\
+3 & Longest Nice Substring (LeetCode 1763) & C & хэсэгчлэх \\
+4 & Different Ways to Add Parentheses (LeetCode 241) & B → A & хэсэгчлэх → товъёг + санах (memo) \\
+5 & Construct Binary Tree from Preorder and Inorder Traversal (LeetCode 105) & B → A & дахин дуудах → толь + товъёг \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Хэсэгчлэх арга ба дахин дуудах тэгшитгэл}
+Хэсэгчлэх арга гурван алхамтай: \textbf{хуваах} (ижил төрлийн жижиг дэд бодлогууд), \textbf{бодох} (дэд бодлогыг дахин дуудалтаар; хангалттай жижиг бол шууд), \textbf{нэгтгэх} (дэд шийдүүдээс эх бодлогын шийд). n хэмжээтэй бодлогыг n/b хэмжээтэй a дэд бодлогод хувааж, хуваах ба нэгтгэхэд f(n) ажил зарцуулбал
+
+\begin{center}T(n) = a·T(n/b) + f(n).\end{center}
+
+Ерөнхий теоремоор (лекцийн Теорем 5.1–5.2) f(n)-г n\textsuperscript{log\textsubscript{b} a} урсгал функцтэй харьцуулна: (1) f = O(n\textsuperscript{log\textsubscript{b} a − ϵ}) → Θ(n\textsuperscript{log\textsubscript{b} a}); (2) f = Θ(n\textsuperscript{log\textsubscript{b} a} lg\textsuperscript{k} n), k ≥ 0 → Θ(n\textsuperscript{log\textsubscript{b} a} lg\textsuperscript{k+1} n); (3) f = Ω(n\textsuperscript{log\textsubscript{b} a + ϵ}) ба a·f(n/b) ≤ c·f(n), c < 1 → Θ(f(n)). Тэгш биш хуваалттай (жишээ нь 5-р бодлого) тэгшитгэлийг давталтын мод эсвэл орлуулгаар бодно.
+
+\subsection{Файлын бүтэц}
+\begin{Verbatim}
+prj1/B190910014/
+├── python/src/         p1_majority_element.py … p5_build_tree_improved.py
+├── python/tests/       test_problems.py (pytest)
+├── python/bench.py     хэмжилт
+├── java/src/main/...   MajorityElement.java … BuildTreeImproved.java, Bench.java
+├── java/src/test/...   ProblemsTest.java (JUnit 5)
+├── report/             prj1_report.tex, prj1_report.pdf, make_tables.py, build.sh
+└── env_info.sh
+\end{Verbatim}
+LeetCode-д илгээхдээ Python-д \texttt{class Solution}-ийг шууд, Java-д классын нэрийг \texttt{Solution} болгож (\texttt{package} мөрийг хасаж) илгээнэ. \texttt{TreeNode}-ийг LeetCode өөрөө өгдөг.
+
+\subsection{Тестийн ерөнхий үр дүн}
+Бодлого бүрийг LeetCode-ийн жишээ болон \textbf{шууд аргатай (brute force) харьцуулсан санамсаргүй тохиолдлоор} шалгав:
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Бодлого} & \textbf{\begin{tabular}[b]{@{}l@{}}Шалгасан \\ зүйл\end{tabular}} \\
+\midrule
+1 & 300 санамсаргүй массив, \texttt{Counter}/\texttt{groupingBy}-ээр тоолсон хариутай \\
+2 & n = 0, 1, 2, 3, 7, 8, 100, 1000: inorder нь эрэмбэлэгдсэн (хайлтын мод), өндөр яг ⌈lg(n+1)⌉ \\
+3 & 2000 санамсаргүй мөр, бүх дэд мөрийг шалгах Θ(n³) аргатай \\
+4 & k = 0…8 (тус бүр 5 илэрхийлэл): хоёр хувилбарын хариу ижил, хариуны тоо Cₖ, дуудалт 3ᵏ ба (k+1)(k+2)/2 \\
+5 & 200 санамсаргүй мод + 2000 зангилаатай гинж: сэргээсэн модны preorder, inorder анхныхтай ижил \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}Xl}
+\toprule
+\textbf{Хэл} & \textbf{Команд} & \textbf{Үр дүн} \\
+\midrule
+Python & \texttt{cd python \&\& .\allowbreak{}venv/\allowbreak{}bin/\allowbreak{}pytest -v} & 28 passed \\
+Java & \texttt{cd java \&\& mvn test} & Tests run: 6, Failures: 0 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Хэмжилтийн орчин ба арга}
+WSL2 Ubuntu 22.04, Intel Core i5-1334U (12 логик цөм, L2 7.5 MiB, L3 12 MiB), 7.6 GiB RAM, Python 3.10.12, OpenJDK 17.0.20.1 (\texttt{env\_\allowbreak{}info.\allowbreak{}sh}).
+
+\begin{itemize}
+\item \textbf{Хугацаа.} Нэг багц ≥ 20 ms байтал дуудалтыг давтаж, нэг дуудалтын дунджийг гаргав. Python-д 3, Java-д 5 багцын медиан. Java-д эхний багцуудаар JIT-ийг халааж, хэмжилт бүрийн өмнө GC ажиллуулав.
+\item \textbf{Санах ой.} Python: \texttt{tracemalloc}-ийн \textbf{оргил} утга (дуудалтын явцад Python-ы объектуудад нэгэн зэрэг эзэлсэн хамгийн их санах ой). Java: \texttt{ThreadMXBean.\allowbreak{}getThreadAllocatedBytes}-ээр нэг дуудалтад \textbf{нийт хуваарилсан} санах ой (GC-ээр чөлөөлөгдсөн ч тоологдоно). Хоёр хэмжигдэхүүн ижил биш тул хэл хооронд шууд харьцуулахгүй, харин n өсөхөд хэрхэн өөрчлөгдөх хандлагыг харьцуулна. Дахин дуудалтын стек аль алинд нь тоологдохгүй.
+\end{itemize}
+
+Хэмжилтийг дахин хийж тайланг шинэчлэх дараалал:
+
+\begin{Verbatim}
+cd python && python3 bench.py                      # -> out/results_python.tsv
+cd java && java -Xss64m -cp build com.prj1.Bench   # -> out/results_java.tsv
+cd report && python3 make_tables.py && ./build.sh  # хүснэгт -> .tex -> PDF
+\end{Verbatim}
+
+\section{Бодлого 1. Majority Element (LeetCode 169)}
+
+\subsection{Зорилго}
+n урттай массиваас хагасаас олон (⌊n/2⌋ + 1 ба түүнээс дээш) удаа орсон (олонх) гишүүнийг олно. Ийм гишүүн заавал байна.
+
+\subsection{Алгоритмын санаа}
+\textbf{Ажиглалт:} m нь бүх массивын олонх гишүүн бол зүүн эсвэл баруун хагасын \textbf{ядаж нэгд нь} олонх байна. Хэрэв хоёр хагасын аль алинд нь хагасаас олон биш байсан бол нийт тоо нь n/2-оос хэтрэхгүй. Тиймээс:
+\begin{enumerate}
+\item \textbf{Хуваах:} [lo, hi)-г дундуур нь хоёр хуваана.
+\item \textbf{Бодох:} хагас бүрийн олонх гишүүнийг дахин дуудалтаар олно (суурь: ганц гишүүн).
+\item \textbf{Нэгтгэх:} хоёр нэр дэвшигч ижил бол тэр. Өөр бол [lo, hi) мужид тус бүрийг тоолж, олон удаа орсныг сонгоно.
+\end{enumerate}
+
+\begin{Verbatim}
+def majority(lo, hi):                 # nums[lo:hi]-ийн олонх гишүүн
+    if hi - lo == 1:
+        return nums[lo]
+    mid = (lo + hi) // 2
+    left, right = majority(lo, mid), majority(mid, hi)
+    if left == right:
+        return left
+    left_count = sum(1 for i in range(lo, hi) if nums[i] == left)
+    right_count = sum(1 for i in range(lo, hi) if nums[i] == right)
+    return left if left_count > right_count else right
+\end{Verbatim}
+
+\subsection{Хэрэгжүүлэлт}
+\begin{itemize}
+\item \textbf{Python} (\texttt{p1\_\allowbreak{}majority\_\allowbreak{}element.\allowbreak{}py}): \texttt{class Solution} доторх \texttt{majority(lo, hi)} функц. Массивыг зүсэхгүй, хил заагийг л дамжуулна.
+\item \textbf{Java} (\texttt{MajorityElement.\allowbreak{}java}): \texttt{majority(nums, lo, hi)} арга. Дунд цэгийг \texttt{(lo + hi) >>> 1} гэж олж, int-ийн халилтаас сэргийлэв. Хоёр нэр дэвшигчийг нэг давталтаар зэрэг тоолно.
+\end{itemize}
+
+\subsection{Тестийн үр дүн}
+\begin{itemize}
+\item LeetCode-ийн 3 жишээ: [3, 2, 3] → 3, [2, 2, 1, 1, 1, 2, 2] → 2, [7] → 7.
+\item 300 санамсаргүй массив (n ≤ 60, олонх гишүүнийг зориуд ⌊n/2⌋ + 1-ээс олон оруулсан): Python-д \texttt{Counter}, Java-д \texttt{groupingBy}-ээр тоолсон хариутай бүгд таарсан.
+\end{itemize}
+
+\subsection{Хугацаа}
+Хамгийн муу үед төвшин бүрд тоолох ажил Θ(n): \textbf{T(n) = 2T(n/2) + Θ(n)} → a = b = 2, n\textsuperscript{log₂2} = n = f(n), 2-р тохиолдол (k = 0) → \textbf{Θ(n lg n)}. Хамгийн сайн үед (бүх гишүүн ижил) нэгтгэх алхам Θ(1) тул T(n) = 2T(n/2) + Θ(1) = Θ(n).
+
+% BEGIN:p1
+\begin{center}
+\footnotesize
+\begin{tabular}{rrrrrr}
+\toprule
+\textbf{n} & \textbf{\begin{tabular}[b]{@{}r@{}}Python, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python \\ t/(n lg n), нс\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python санах \\ ой, KB\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java санах \\ ой, KB\end{tabular}} \\
+\midrule
+1\,000 & 1.126 & 0.012 & 113 & 1.6 & 0.0 \\
+10\,000 & 12.8 & 0.118 & 96 & 2.2 & 0.0 \\
+100\,000 & 123.6 & 1.572 & 74 & 2.5 & 0.0 \\
+1\,000\,000 & 1\,431 & 16.0 & 72 & 2.8 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p1
+
+n 10 дахин өсөхөд хугацаа ≈ 10·lg(10n)/lg n дахин өсөх ёстой. Python-д 10⁵ → 10⁶ үед 11.6 дахин (онол 12.0), Java-д 10.2 дахин өссөн. «t / (n lg n)» багана 113 → 72 нс гэж бага зэрэг буурч, том n дээр тогтворжиж байна. Жижиг n дээр функцийн дуудалт, хэмжилтийн тогтмол зардал харьцангуй их байдаг тул ингэж буурч байгаа нь Θ(n lg n) үнэлгээтэй зөрөхгүй.
+
+\subsection{Санах ой}
+Массивыг хуулахгүй, зөвхөн (lo, hi) товъёгоор дамжуулна. Нэмэлт санах ой нь дахин дуудалтын стекийн гүн ⌈lg n⌉ буюу \textbf{Θ(lg n)}. Хэмжилтэд Python-ы оргил хэдхэн KB, Java-д хуваарилалт 0 байгаа нь (стек тоологдохгүй) үүнийг харуулна.
+
+Харьцуулахад Boyer–Moore-ын санал хураах арга нэг удаа гүйгээд \textbf{Θ(n)} хугацаа, \textbf{Θ(1)} санах ойтой. Хэсэгчлэх арга lg n дахин удаан ч бодлогыг хувааж, нэгтгэх санааг тодорхой харуулдаг.
+
+\section{Бодлого 2. Convert Sorted Array to Binary Search Tree (LeetCode 108)}
+
+\subsection{Зорилго}
+Өсөхөөр эрэмбэлэгдсэн массиваас \textbf{өндрөөр тэнцвэртэй} хоёртын хайлтын мод байгуулна.
+
+\subsection{Алгоритмын санаа}
+Дунд гишүүнийг үндэс болговол зүүн тал нь бүгд бага, баруун тал нь бүгд их (хайлтын модны нөхцөл), хоёр талын хэмжээ хамгийн ихдээ 1-ээр ялгаатай (тэнцвэр). Хоёр талыг дахин дуудалтаар байгуулна.
+
+\begin{Verbatim}
+def build(lo, hi):                    # nums[lo..hi]
+    if lo > hi:
+        return None
+    mid = (lo + hi) // 2
+    return TreeNode(nums[mid], build(lo, mid - 1), build(mid + 1, hi))
+\end{Verbatim}
+
+Модны өндөр яг ⌈lg(n+1)⌉ бөгөөд энэ нь n зангилаатай хоёртын модны хамгийн бага өндөр (тестээр шалгав).
+
+\subsection{Хэрэгжүүлэлт}
+\begin{itemize}
+\item \textbf{Python} (\texttt{p2\_\allowbreak{}sorted\_\allowbreak{}array\_\allowbreak{}to\_\allowbreak{}bst.\allowbreak{}py}), \textbf{Java} (\texttt{SortedArrayToBst.\allowbreak{}java}): \texttt{build(lo, hi)} нь \texttt{TreeNode(nums[mid], build(lo, mid − 1), build(mid + 1, hi))}-ийг буцаана. \texttt{TreeNode}-ийг LeetCode өгдөг. Өөрийн компьютер дээр \texttt{tree\_\allowbreak{}node.\allowbreak{}py}, \texttt{TreeNode.\allowbreak{}java}-г ашиглана.
+\end{itemize}
+
+\subsection{Тестийн үр дүн}
+n = 0, 1, 2, 3, 7, 8, 100, 1000 бүрд хоёр хэл дээр: (1) модны inorder тойролт анхны массивтай ижил, өөрөөр хэлбэл хайлтын мод; (2) зүүн, баруун дэд модны өндрийн зөрүү ≤ 1; (3) өндөр яг ⌈lg(n+1)⌉. Бүгд давсан.
+
+\subsection{Хугацаа}
+Дуудалт бүр Θ(1) ажил хийж хоёр хагаст дуудна: \textbf{T(n) = 2T(n/2) + Θ(1)} → n\textsuperscript{log₂2} = n ≫ 1 = O(n\textsuperscript{1−ϵ}), ϵ = 1, 1-р тохиолдол → \textbf{Θ(n)}. Зангилаа бүрийг яг нэг удаа үүсгэдэг тул доод хязгаар Ω(n) бөгөөд түүнээс бага байж чадахгүй.
+
+% BEGIN:p2
+\begin{center}
+\footnotesize
+\begin{tabular}{rrrrrr}
+\toprule
+\textbf{n} & \textbf{\begin{tabular}[b]{@{}r@{}}Python, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python санах \\ ой, KB\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java санах \\ ой, KB\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java, байт/ \\ зангилаа\end{tabular}} \\
+\midrule
+1\,000 & 0.662 & 0.040 & 143.9 & 23.5 & 24 \\
+10\,000 & 12.4 & 0.116 & 1\,480 & 234.4 & 24 \\
+100\,000 & 187.8 & 1.015 & 14\,840 & 2\,344 & 24 \\
+1\,000\,000 & 6\,825 & 42.7 & 148\,435 & 23\,438 & 24 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p2
+
+Java-д n = 10⁴ → 10⁵ үед хугацаа 8.7 дахин өссөн. 10⁵ → 10⁶ үед 42 дахин өссөн нь 23 MB шинэ объект үүсгэхэд GC ажилласантай холбоотой. Python-д 10⁶ зангилаа үүсгэхэд санах ой хуваарилалт, GC давамгайлж шугамаас хурдан өссөн. Гэхдээ хийж буй \textbf{алхмын тоо} яг n дуудалт тул онолын эрэмбэ Θ(n) хэвээр.
+
+\subsection{Санах ой}
+Гаралт өөрөө n зангилаа тул \textbf{Θ(n)}, үүнээс гадна дахин дуудалтын стек Θ(lg n). Java-д зангилаа бүр яг 24 байт (объектын толгой 12 + int 4 + хоёр заагч 2×4, 8-д тэгшилсэн) эзэлж байгаа нь хүснэгтийн сүүлийн баганаас харагдана. Python-ы объект илүү том (≈ 150 байт/зангилаа).
+
+\section{Бодлого 3. Longest Nice Substring (LeetCode 1763)}
+
+\subsection{Зорилго}
+Үсэг бүр нь том, жижиг хоёр хэлбэрээрээ орсон мөрийг «сайхан» гэнэ. Хамгийн урт сайхан дэд мөрийг олно. Ижил урттай хэд байвал хамгийн эхнийхийг буцаана.
+
+\subsection{Алгоритмын санаа}
+\textbf{«Муу» үсэг:} эсрэг хэлбэр нь мөрөнд огт байхгүй үсэг. Муу үсэг агуулсан дэд мөр хэзээ ч сайхан болохгүй. Тиймээс:
+\begin{enumerate}
+\item \textbf{Хуваах:} мөрийг бүх муу үсгээр нь нэг дор хэсэглэнэ.
+\item \textbf{Бодох:} хэсэг бүрийг дахин дуудалтаар бодно.
+\item \textbf{Нэгтгэх:} хамгийн урт хариуг авна (тэнцүү бол эхнийх).
+\end{enumerate}
+
+Муу үсэг байхгүй бол s өөрөө сайхан.
+
+\begin{Verbatim}
+def longestNiceSubstring(s):
+    if len(s) < 2:
+        return ""
+    present = set(s)
+    best, start, split = "", 0, False
+    for i, ch in enumerate(s):
+        if ch.swapcase() not in present:          # муу үсэг
+            split = True
+            part = longestNiceSubstring(s[start:i])
+            if len(part) > len(best):
+                best = part
+            start = i + 1
+    if not split:
+        return s
+    part = longestNiceSubstring(s[start:])
+    return part if len(part) > len(best) else best
+\end{Verbatim}
+
+\subsection{Хэрэгжүүлэлт}
+\begin{itemize}
+\item \textbf{Python} (\texttt{p3\_\allowbreak{}longest\_\allowbreak{}nice\_\allowbreak{}substring.\allowbreak{}py}): \texttt{present = set(s)}, хэсгийг зүсэж (\texttt{s[start:i]}) дахин дуудна.
+\item \textbf{Java} (\texttt{LongestNiceSubstring.\allowbreak{}java}): мөрийг хуулахгүй, \texttt{solve(s, lo, hi)} товъёгоор дамжуулна. Үсэг ASCII тул олонлогийн оронд \texttt{boolean[128]} массив хэрэглэнэ. Эцэст нь ганц удаа \texttt{substring} хийнэ.
+\end{itemize}
+
+\subsection{Тестийн үр дүн}
+\begin{itemize}
+\item LeetCode-ийн 4 жишээ: "YazaAay" → "aAa", "Bb" → "Bb", "c" → "", "dDzeE" → "dD".
+\item «aAbBcC» үсгүүдээс бүрдсэн 0–14 урттай 2000 санамсаргүй мөр: бүх дэд мөрийг шалгадаг Θ(n³) шууд аргатай (ижил урттай бол эхнийх) таарсан.
+\end{itemize}
+
+\subsection{Хугацаа}
+Хэсгүүдийн нийт урт < n тул төвшин бүрийн нийт ажил Θ(n): T(n) = Σ T(nᵢ) + Θ(n), Σ nᵢ < n. \textbf{Гүний хязгаар:} нэг төвшинд хуваасан муу үсгийн төрөл хүүхдийн бүх хэсгээс бүрмөсөн алга болно. Тиймээс төвшин бүрд хэсэгт байгаа үсгийн төрлийн тоо дор хаяж 1-ээр буурч, гүн ≤ |Σ| = 52 болно. Нийт \textbf{Θ(|Σ|·n) = Θ(n)} (|Σ| тогтмол).
+
+Хэрэв зөвхөн эхний муу үсгээр хуваавал «aaaa…a» мэт оролтод гүн n болж Θ(n²) болно. Бүх муу үсгээр нэг дор хуваах нь энэ муу тохиолдлоос сэргийлдэг.
+
+% BEGIN:p3
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rlrrrrrr}
+\toprule
+\textbf{n} & \textbf{Оролт} & \textbf{\begin{tabular}[b]{@{}r@{}}Python, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python \\ t/n, нс\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java \\ t/n, нс\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python санах \\ ой, KB\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java санах \\ ой, KB\end{tabular}} \\
+\midrule
+100 & nice & 0.019 & 0.001 & 190 & 10 & 0.9 & 0.2 \\
+100 & split & 0.081 & 0.008 & 810 & 80 & 3.6 & 3.5 \\
+1\,000 & nice & 0.232 & 0.004 & 232 & 4 & 1.0 & 0.2 \\
+1\,000 & split & 0.741 & 0.029 & 741 & 29 & 3.7 & 27.6 \\
+10\,000 & nice & 2.193 & 0.084 & 219 & 8 & 1.0 & 0.2 \\
+10\,000 & split & 8.143 & 0.800 & 814 & 80 & 4.4 & 307.4 \\
+100\,000 & nice & 35.0 & 1.310 & 350 & 13 & 1.0 & 0.2 \\
+100\,000 & split & 131.5 & 6.169 & 1315 & 62 & 4.6 & 2\,902 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p3
+
+«nice» оролтод мөр бүхэлдээ сайхан тул ганц удаа гүйж дуусна. «split» оролтод хос хэлбэргүй «z» үсгээр олон хуваалт хийгдэж, дахин дуудалт ажиллана. Аль алинд нь «t / n» тогтмол орчим байгаа нь Θ(n)-ийг баталж байна.
+
+\subsection{Санах ой}
+\texttt{present} олонлог Θ(|Σ|). Python хувилбар дэд мөрийг хуулдаг тул нэг төвшинд Θ(n) түр санах ой, стекийн гүн ≤ 52. Java хувилбар хуулалгүй (lo, hi) товъёгоор дамжуулж, дуудалт бүрд \texttt{boolean[128]} хэрэглэдэг. Тиймээс \textbf{нэгэн зэрэг амьд} байх нэмэлт санах ой нь Θ(|Σ|·гүн) = \textbf{Θ(1)} (гаралтын мөрөөс бусдаар). Python-ы оргил утга оролтын уртаас үл хамааран ≈ 1–5 KB байгаа нь үүнийг харуулж байна.
+
+Java-гийн хүснэгтэд «split» үед санах ой n өсөхийн хэрээр өсөж байгаа нь \textbf{нийт хуваарилалт} юм. Дуудалт бүр шинэ \texttt{boolean[128]} (≈ 144 байт) үүсгэх бөгөөд «z» үсэг 11 тэмдэгт тутамд нэг таарч, дуудалтын тоо ≈ n/11 болно: n = 10⁵ үед ≈ 9 000 дуудалт × 144 байт + бусад ≈ 2.9 MB. Эдгээр массив дуудалт дуусмагц хог болдог тул оргил санах ойд нөлөөлөхгүй. «Нийт хуваарилалт» ба «оргил санах ой» гэдэг хоёр өөр хэмжигдэхүүнийг ялгах нь чухал.
+
+\section{Бодлого 4. Different Ways to Add Parentheses (LeetCode 241)}
+
+\subsection{Зорилго}
+\texttt{+}, \texttt{-}, \texttt{*} үйлдэл ба тоо агуулсан илэрхийлэлд хаалтыг бүх боломжит аргаар тавьж гарах бүх утгыг буцаана.
+
+\subsection{Алгоритмын санаа (B төвшин)}
+Хамгийн сүүлд хийгдэх үйлдлийг сонгоод илэрхийллийг хоёр хуваана. Зүүн, баруун талын бүх утгыг дахин дуудалтаар олоод, хос бүрд тэр үйлдлийг хэрэглэнэ.
+
+\begin{Verbatim}
+def diffWaysToCompute(expression):
+    results = []
+    for i, ch in enumerate(expression):
+        if ch in "+-*":
+            left = diffWaysToCompute(expression[:i])
+            right = diffWaysToCompute(expression[i + 1:])
+            for x in left:
+                for y in right:
+                    results.append(apply(x, y, ch))
+    if not results:                       # үйлдэлгүй — ганц тоо
+        results.append(int(expression))
+    return results
+\end{Verbatim}
+
+\subsection{Хугацаа ба санах ой (B төвшин)}
+k үйлдэлтэй илэрхийлэлд хариуны тоо нь \textbf{Каталаны тоо} Cₖ = (2k)! / ((k+1)!·k!) ≈ 4ᵏ / (k\textsuperscript{1.5}·√π). Гаралт өөрөө ийм хэмжээтэй тул аль ч алгоритм Ω(Cₖ).
+
+Дуудалтын тоо: C(0) = 1, C(k) = 1 + Σⱼ₌₀\textsuperscript{k−1} [C(j) + C(k−1−j)] = 1 + 2·Σⱼ₌₀\textsuperscript{k−1} C(j) тул C(k) = 3·C(k−1) буюу \textbf{C(k) = 3ᵏ} (тестээр шалгав). Гэтэл өөр өөр дэд илэрхийлэл ердөө (k+1)(k+2)/2 л бий. Тэгэхээр \textbf{ижил дэд бодлогыг олон дахин} бодож, дэд мөрийг хуулж, тоог дахин задалж байна. Түр жагсаалтуудын нийт хэмжээ ч гурвын зэргээр өснө.
+
+\subsection{Сайжруулсан шийдэл (A төвшин)}
+\begin{enumerate}
+\item Илэрхийллийг \textbf{нэг удаа} тоо, үйлдлийн жагсаалт болгон задална (дэд мөр хуулахгүй).
+\item Дэд бодлогыг операндын \textbf{товъёгийн муж (i, j)}-ээр тодорхойлж, хариуг \textbf{санана (memo)}.
+\end{enumerate}
+
+\begin{Verbatim}
+def compute(i, j):                        # nums[i..j] операндууд
+    if (i, j) in memo:
+        return memo[(i, j)]
+    if i == j:
+        result = [nums[i]]
+    else:
+        result = [apply(x, y, ops[k])
+                  for k in range(i, j)
+                  for x in compute(i, k)
+                  for y in compute(k + 1, j)]
+    memo[(i, j)] = result
+    return result
+\end{Verbatim}
+
+\textbf{Хэрэгжүүлэлт.} Анхны: \texttt{p4\_\allowbreak{}different\_\allowbreak{}ways.\allowbreak{}py}, \texttt{DifferentWays.\allowbreak{}java}. Сайжруулсан: \texttt{p4\_\allowbreak{}different\_\allowbreak{}ways\_\allowbreak{}improved.\allowbreak{}py}, \texttt{DifferentWaysImproved.\allowbreak{}java}. Python-д memo нь \texttt{dict}, түлхүүр нь (i, j). Java-д \texttt{List<Integer>[][]} хоёр хэмжээст массив, түлхүүр тооцоолох шаардлагагүй тул хурдан. Хоёр хувилбар \texttt{calls} тоолуураар бодсон дэд бодлогын тоог бүртгэнэ.
+
+\textbf{Тестийн үр дүн.} LeetCode-ийн жишээ "2-1-1" → [0, 2], "2*3-4*5" → [−34, −14, −10, −10, 10] хоёр хувилбарт таарсан. k = 0…8 үйлдэлтэй (тус бүр 5) санамсаргүй илэрхийлэлд хоёр хувилбарын хариу ижил, хариуны тоо яг Cₖ, дуудалтын тоо яг 3ᵏ ба (k+1)(k+2)/2 (Python 7, Java 2 тест).
+
+Дэд бодлого бүр яг нэг удаа бодогдоно: \textbf{(k+1)(k+2)/2} удаа. Хугацаа нь бүх дэд бодлогын хариуг байгуулах ажилтай тэнцүү, ойролцоогоор Θ(Σ\textsubscript{m} (k+1−m)·C\textsubscript{m}) = Θ(Cₖ). Энэ нь гаралтын хэмжээтэй ижил эрэмбэтэй тул асимптот оновчтой.
+
+% BEGIN:p4_time
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrrrrr}
+\toprule
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Дуудалтын тоо}} & \multicolumn{2}{c}{\textbf{Python, ms}} & \multicolumn{2}{c}{\textbf{Java, ms}} & \multicolumn{1}{c}{} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8}
+\textbf{k} & \textbf{\begin{tabular}[b]{@{}r@{}}Хариу \\ (Каталан)\end{tabular}} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{\begin{tabular}[b]{@{}r@{}}Python-д \\ хурдсалт\end{tabular}} \\
+\midrule
+2 & 2 & 9 & 6 & 0.012 & 0.017 & 0.002 & 0.004 & 0.7× \\
+3 & 5 & 27 & 10 & 0.038 & 0.034 & 0.005 & 0.003 & 1.1× \\
+4 & 14 & 81 & 15 & 0.089 & 0.033 & 0.014 & 0.003 & 2.7× \\
+5 & 42 & 243 & 21 & 0.377 & 0.145 & 0.017 & 0.002 & 2.6× \\
+6 & 132 & 729 & 28 & 0.978 & 0.139 & 0.044 & 0.005 & 7.0× \\
+7 & 429 & 2\,187 & 36 & 1.985 & 0.324 & 0.142 & 0.016 & 6.1× \\
+8 & 1\,430 & 6\,561 & 45 & 7.464 & 0.982 & 0.456 & 0.046 & 7.6× \\
+9 & 4\,862 & 19\,683 & 55 & 17.8 & 3.654 & 1.418 & 0.193 & 4.9× \\
+10 & 16\,796 & 59\,049 & 66 & 59.9 & 9.266 & 4.369 & 0.498 & 6.5× \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p4_time
+
+Дуудалтын тоо 3ᵏ байсныг (k+1)(k+2)/2 болгож бууруулсан (k = 10: 59 049 → 66). Хугацаа k = 10 үед Python-д \textbf{6.5 дахин}, Java-д \textbf{8.8 дахин} хурдан болов. Хугацааны хурдсалт дуудалтын тооны харьцаа шиг (895 дахин) их биш. Учир нь хоёр хувилбарын аль аль нь Cₖ хэмжээтэй гаралтыг байгуулах ёстой бөгөөд энэ ажил сайжруулсан хувилбарын хугацааны ихэнхийг эзэлдэг. Сайжруулалт \textbf{давхардсан} ажлыг арилгасан, харин \textbf{гаралтын} ажлыг арилгах боломжгүй.
+
+\textbf{Санах ой.} memo нь бүх (i, j) мужийн хариуг зэрэг хадгалдаг тул Python-ы \textbf{оргил} санах ой сайжруулсан хувилбарт бага зэрэг их байна (k = 10: 460 KB → 619 KB). Энэ бол хугацаа ба санах ойн солилцоо (time–space tradeoff). Харин Java-д нэг дуудалтад \textbf{нийт хуваарилсан} санах ой анхны хувилбарт 3ᵏ-аар өсөж, сайжруулсанд хэд дахин бага байна:
+
+% BEGIN:p4_mem
+\begin{center}
+\footnotesize
+\begin{tabular}{rrrrr}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Python, KB}} & \multicolumn{2}{c}{\textbf{Java, KB}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+\textbf{k} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} \\
+\midrule
+2 & 0.7 & 1.5 & 1.4 & 1.4 \\
+3 & 1.0 & 2.1 & 4.4 & 2.2 \\
+4 & 1.7 & 3.5 & 13.3 & 2.2 \\
+5 & 2.6 & 5.4 & 32.7 & 4.2 \\
+6 & 7.0 & 14.3 & 103.4 & 10.8 \\
+7 & 20.4 & 37.1 & 318.3 & 30.2 \\
+8 & 67.1 & 111.4 & 982.8 & 94.1 \\
+9 & 225.6 & 342.9 & 3\,060 & 307.2 \\
+10 & 460.4 & 618.5 & 9\,415 & 1\,025 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p4_mem
+
+\section{Бодлого 5. Construct Binary Tree from Preorder and Inorder Traversal (LeetCode 105)}
+
+\subsection{Зорилго}
+Ялгаатай утгатай хоёртын модны preorder (үндэс → зүүн → баруун) ба inorder (зүүн → үндэс → баруун) тойролтоос модыг сэргээнэ.
+
+\subsection{Алгоритмын санаа (B төвшин)}
+preorder[0] нь үндэс. inorder-т үндсээс зүүн талд зүүн дэд мод, баруун талд баруун дэд мод байрлана. Хэрэв үндэс inorder-ийн k байрлалд байвал preorder[1..k] нь зүүн дэд модны preorder. Хоёр жагсаалтыг хуваагаад хоёр дэд модыг дахин дуудалтаар сэргээнэ.
+
+\begin{Verbatim}
+def buildTree(preorder, inorder):
+    if not preorder:
+        return None
+    root = TreeNode(preorder[0])
+    k = inorder.index(preorder[0])                    # Θ(n) хайлт
+    root.left = buildTree(preorder[1:k + 1], inorder[:k])
+    root.right = buildTree(preorder[k + 1:], inorder[k + 1:])
+    return root
+\end{Verbatim}
+
+\subsection{Хугацаа ба санах ой (B төвшин)}
+Дуудалт бүр шугаман хайлт ба хуулалтад Θ(n) зарцуулна: T(n) = T(k) + T(n−1−k) + Θ(n).
+\begin{itemize}
+\item \textbf{Тэнцвэртэй ойролцоо мод} (k ≈ n/2): T(n) = 2T(n/2) + Θ(n) = \textbf{Θ(n lg n)} (R1).
+\item \textbf{Нэг талдаа тулсан мод} (k = n−1 буюу гинж): T(n) = T(n−1) + Θ(n) = Σ Θ(i) = \textbf{Θ(n²)}.
+\end{itemize}
+
+Санах ой: зүсмэл бүр шинэ жагсаалт. Гинжин модонд дахин дуудалтын зам дээрх бүх зүсмэл зэрэг амьд байх тул оргил санах ой n + (n−1) + … ≈ n²/2 буюу \textbf{Θ(n²)} болно.
+
+\subsection{Сайжруулсан шийдэл (A төвшин)}
+\begin{enumerate}
+\item inorder-ийн \textbf{утга → товъёг} хосуудыг тольд (Python-д \texttt{dict}, Java-д \texttt{HashMap}) нэг удаа хадгална: хайлт \textbf{Θ(1)}.
+\item Жагсаалт хуулахгүй, inorder-ийн (lo, hi) мужаар дамжуулна. preorder-ийг нэг заагчаар дарааллаар уншина, учир нь preorder-т үндэс → зүүн дэд мод → баруун дэд мод гэсэн дараалалтай.
+\end{enumerate}
+
+\begin{Verbatim}
+position = {value: i for i, value in enumerate(inorder)}
+next_root = 0
+
+def build(lo, hi):                                    # inorder[lo..hi]
+    nonlocal next_root
+    if lo > hi:
+        return None
+    value = preorder[next_root]; next_root += 1
+    k = position[value]                               # Θ(1)
+    root = TreeNode(value)
+    root.left = build(lo, k - 1)
+    root.right = build(k + 1, hi)
+    return root
+\end{Verbatim}
+
+\textbf{Хэрэгжүүлэлт.} Анхны: \texttt{p5\_\allowbreak{}build\_\allowbreak{}tree.\allowbreak{}py}, \texttt{BuildTree.\allowbreak{}java} (\texttt{Arrays.\allowbreak{}copyOfRange}-ээр хуулна). Сайжруулсан: \texttt{p5\_\allowbreak{}build\_\allowbreak{}tree\_\allowbreak{}improved.\allowbreak{}py}, \texttt{BuildTreeImproved.\allowbreak{}java} (\texttt{HashMap<Integer, Integer>}, \texttt{nextRoot} талбар). Гинжин модонд дахин дуудалтын гүн n хүрэх тул Python-д \texttt{sys.\allowbreak{}setrecursionlimit(20000)}, Java-гийн хэмжилтэд \texttt{-Xss64m} тохиргоо хэрэглэв.
+
+\textbf{Тестийн үр дүн.} LeetCode-ийн жишээ (preorder [3, 9, 20, 15, 7], inorder [9, 3, 15, 20, 7]), 0–60 зангилаатай 200 санамсаргүй мод болон 2000 зангилаатай гинж дээр сэргээсэн модны preorder, inorder тойролт анхныхтай ижил. Хоёр хувилбар, хоёр хэл дээр давсан.
+
+Одоо T(n) = T(k) + T(n−1−k) + Θ(1) тул модны хэлбэрээс үл хамааран \textbf{Θ(n)}. Санах ой: толь Θ(n) + стек Θ(h), h ≤ n.
+
+\textbf{Санамсаргүй мод:}
+
+% BEGIN:p5_random
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrrrrr}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Python, ms}} & \multicolumn{2}{c}{\textbf{Java, ms}} & \multicolumn{2}{c}{\textbf{Python, KB}} & \multicolumn{2}{c}{\textbf{Java, KB}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+\textbf{n} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} \\
+\midrule
+500 & 1.567 & 0.592 & 0.108 & 0.542 & 87.5 & 94.5 & 81.2 & 56.9 \\
+1\,000 & 1.678 & 1.222 & 0.066 & 0.053 & 172.0 & 200.4 & 169.1 & 115.7 \\
+2\,000 & 4.927 & 2.308 & 0.132 & 0.183 & 328.6 & 418.4 & 364.2 & 233.3 \\
+4\,000 & 6.605 & 5.714 & 0.278 & 0.380 & 613.5 & 835.9 & 760.5 & 468.4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p5_random
+
+Санамсаргүй модны өндөр ≈ O(lg n) тул анхны хувилбар дунджаар Θ(n lg n) бөгөөд Python-ы зүсэлт, \texttt{index} нь C хэл дээр хэрэгжсэн тул хурдан. Хоёр хувилбарын ялгаа бага, хэдхэн мс-ийн төвшинд хэмжилтийн хэлбэлзэл ч нөлөөлж байна. Сайжруулалтын жинхэнэ ач холбогдол хамгийн муу тохиолдолд харагдана.
+
+\textbf{Гинж (хамгийн муу тохиолдол):}
+
+% BEGIN:p5_chain
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrrrrr}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Python, ms}} & \multicolumn{2}{c}{\textbf{Java, ms}} & \multicolumn{2}{c}{\textbf{Python, KB}} & \multicolumn{2}{c}{\textbf{Java, KB}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+\textbf{n} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} & \textbf{анхны} & \textbf{сайжруулсан} \\
+\midrule
+500 & 3.535 & 0.629 & 0.322 & 0.046 & 2\,211 & 241.6 & 1\,020 & 52.9 \\
+1\,000 & 14.5 & 1.346 & 0.973 & 0.054 & 8\,436 & 595.5 & 3\,992 & 111.7 \\
+2\,000 & 64.7 & 2.762 & 6.794 & 0.100 & 32\,604 & 1\,303 & 15\,797 & 229.3 \\
+4\,000 & 269.4 & 6.314 & 53.7 & 0.289 & 127\,815 & 2\,719 & 62\,844 & 464.4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p5_chain
+
+\section{Дүгнэлт}
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{\linewidth}{ll>{\raggedright\arraybackslash}Xll}
+\toprule
+\textbf{№} & \textbf{Бодлого} & \textbf{\begin{tabular}[b]{@{}l@{}}Дахин дуудах \\ тэгшитгэл\end{tabular}} & \textbf{Хугацаа} & \textbf{\begin{tabular}[b]{@{}l@{}}Нэмэлт \\ санах ой\end{tabular}} \\
+\midrule
+1 & Majority Element & T(n) = 2T(n/2) + Θ(n) & Θ(n lg n) & Θ(lg n) \\
+2 & Sorted Array → BST & T(n) = 2T(n/2) + Θ(1) & Θ(n) & Θ(n) гаралт + Θ(lg n) \\
+3 & Longest Nice Substring & T(n) = ΣT(nᵢ) + Θ(n), гүн ≤ 52 & Θ(n) & Θ(1) (Java) \\
+4 & Different Ways — анхны & C(k) = 1 + 2ΣC(j) = 3ᵏ дуудалт & 3ᵏ дахин бодолт & давхардсан жагсаалт \\
+4 & Different Ways — сайжруулсан & (k+1)(k+2)/2 дэд бодлого & Θ(Cₖ) (гаралттай ижил) & memo \\
+5 & Build Tree — анхны & T(n) = T(k) + T(n−1−k) + Θ(n) & Θ(n lg n) … Θ(n²) & Θ(n²) хүртэл \\
+5 & Build Tree — сайжруулсан & T(n) = T(k) + T(n−1−k) + Θ(1) & Θ(n) & Θ(n) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Гинжин модонд n хоёр дахин өсөхөд анхны хувилбарын санах ой яг 4 дахин (Java 15.8 → 62.8 MB), хугацаа Python-д 4.2 дахин (64.7 → 269 ms) өсөж, \textbf{Θ(n²)}-ийг баталж байна. Java-д хугацаа 7.9 дахин (6.8 → 53.7 ms) өссөн нь n² хэмжээтэй (62 MB) түр массивууд кэшид багтахгүй, GC-ийн ачаалал нэмэгдсэнтэй холбоотой. Сайжруулсан хувилбарт хугацаа ≈ 2–3 дахин буюу \textbf{Θ(n)}. n = 4000 үед хугацаа Python-д \textbf{43 дахин}, Java-д \textbf{186 дахин}, санах ой Python-д \textbf{47 дахин}, Java-д \textbf{135 дахин} багассан.
+
+\textbf{Гол дүгнэлтүүд:}
+
+\begin{enumerate}
+\item \textbf{Хэсэгчлэх аргын өртөг нь хуваах, нэгтгэх алхмын өртгөөс шууд хамаарна.} 1, 2-р бодлого хоёулаа хоёр хагаст хуваадаг ч нэгтгэх алхам Θ(n) ба Θ(1) байгаагаас хариу нь Θ(n lg n) ба Θ(n) болж ялгаатай гарсан.
+\item \textbf{Дэд бодлого давхцаж байвал санах (memo).} 4-р бодлогод ижил дэд илэрхийллийг 3ᵏ удаа бодож байсныг (k+1)(k+2)/2 болгов. Энэ нь динамик программчлалын санаа бөгөөд Лаб 4-ийн сэдэв.
+\item \textbf{Хуулалт ба шугаман хайлтыг товъёг, толиор солих.} 5-р бодлогод хамгийн муу тохиолдлын Θ(n²)-ийг Θ(n) болгосон. Санамсаргүй өгөгдөл дээр ялгаа бага ч хамгийн муу оролтод хэдэн арав дахин.
+\item \textbf{Хуваах стратеги хамгийн муу тохиолдлыг тодорхойлно.} 3-р бодлогод бүх муу үсгээр нэг дор хуваах нь гүнийг ≤ 52 болгож, Θ(n²) болох муу тохиолдлоос сэргийлсэн.
+\item \textbf{Python, Java хоёрын үр дүнгийн хандлага ижил, тогтмол үржүүлэгч өөр.} Java 15–160 дахин хурдан байсан ч (P4: 14×, P1: 89×, P2: 160×) n өсөхөд өсөх хурд хоёр хэлэнд ижил байв. Санах ойн хэмжилтэд «оргил» ба «нийт хуваарилалт» гэсэн хоёр өөр хэмжигдэхүүнийг ялгаж тайлбарлах хэрэгтэй.
+\end{enumerate}
+
+\appendix
+\clearpage
+\section{Java хэрэгжүүлэлт}
+Python кодыг бодлого бүрийн «Алгоритмын санаа» хэсэгт үзүүлсэн. Доор Java шийдлүүдийг \texttt{java/\allowbreak{}src/\allowbreak{}main/\allowbreak{}java/\allowbreak{}com/\allowbreak{}prj1/} хавтаснаас бүтнээр нь оруулав. LeetCode-д илгээхдээ \texttt{package} мөрийг хасаж, классын нэрийг \texttt{Solution} болгоно.
+
+\subsection{1. Majority Element (\texttt{MajorityElement.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/MajorityElement.java}
+
+\subsection{2. Sorted Array → BST (\texttt{SortedArrayToBst.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/SortedArrayToBst.java}
+
+\subsection{3. Longest Nice Substring (\texttt{LongestNiceSubstring.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/LongestNiceSubstring.java}
+
+\subsection{4. Different Ways — анхны (\texttt{DifferentWays.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/DifferentWays.java}
+
+\subsection{4. Different Ways — сайжруулсан (\texttt{DifferentWaysImproved.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/DifferentWaysImproved.java}
+
+\subsection{5. Build Tree — анхны (\texttt{BuildTree.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/BuildTree.java}
+
+\subsection{5. Build Tree — сайжруулсан (\texttt{BuildTreeImproved.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj1/BuildTreeImproved.java}
+
+\end{document}

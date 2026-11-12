@@ -1,7 +1,7 @@
 # Бие даалт 1 — B190910014
 
-Хэсэгчлэх ба дахин дуудах арга, **A түвшин** (Python, Java).
-Тайлан: [report/prj1_report.pdf](report/prj1_report.pdf) ([Markdown эх](report/prj1_report.md)).
+Хэсэгчлэх ба дахин дуудах арга, **A төвшин** (Python, Java).
+Тайлан: [report/prj1_report.pdf](report/prj1_report.pdf) (pdfLaTeX эх: [report/prj1_report.tex](report/prj1_report.tex)).
 
 | № | Бодлого | Python | Java |
 | - | ------- | ------ | ---- |
@@ -20,6 +20,6 @@ cd java && mvn test
 cd python && python3 bench.py
 cd java && javac -d build src/main/java/com/prj1/*.java && java -Xss64m -cp build com.prj1.Bench
 
-# Тайлан: хүснэгт шинэчлэх, PDF үүсгэх (pip install markdown, Chrome/Edge)
-cd report && python make_tables.py && python build_pdf.py
+# Тайлан: хүснэгт шинэчлэх, PDF үүсгэх (pdfLaTeX: texlive-latex-extra, texlive-lang-cyrillic)
+cd report && python3 make_tables.py && ./build.sh
 ```
