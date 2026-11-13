@@ -1,0 +1,544 @@
+% Бие даалт №2 — B190910014 (Б. Билгүүн). F.CSM301 Алгоритмын зохиомж ба шинжилгээ.
+% Хөрвүүлэх: ./build.sh (pdflatex, 2 удаа). Хэмжилтийн хүснэгтүүдийг (% BEGIN … % END)
+% python3 make_tables.py нь ../out/results_*.tsv-ээс шинэчилнэ.
+\documentclass[11pt,a4paper]{article}
+\usepackage{cmap} % PDF-ээс кирилл текстийг зөв хуулах (ToUnicode)
+\input{glyphtounicode}
+\pdfgentounicode=1 % математик тэмдэгт (ϵ, Θ, ≤ …)-ийг ч зөв хуулах
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[mongolian]{babel}
+\usepackage[a4paper,margin=20mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,tabularx}
+\usepackage{fancyvrb}
+\usepackage{pmboxdraw}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[unicode,hidelinks]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\fvset{fontsize=\small,frame=single,framesep=2mm,rulecolor=\color{gray}}
+\renewcommand{\arraystretch}{1.15}
+\emergencystretch=3em
+% Үгийг мөрийн төгсгөлд таслахгүй: PDF-ээс хуулсан текстэд «ха-», «рийг» гэх мэт хэсэг үүсгэхгүй
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+% Файлын урт нэрийг (p4_jump_game_improved.py) «_»-ийн дараа таслах боломжтой
+\let\oldunderscore\_
+\renewcommand{\_}{\oldunderscore\allowbreak}
+
+% Тайланд орсон тусгай тэмдэгтүүд
+\DeclareUnicodeCharacter{0398}{\ensuremath{\Theta}}
+\DeclareUnicodeCharacter{03A3}{\ensuremath{\Sigma}}
+\DeclareUnicodeCharacter{03A9}{\ensuremath{\Omega}}
+\DeclareUnicodeCharacter{03C0}{\ensuremath{\pi}}
+\DeclareUnicodeCharacter{03F5}{\ensuremath{\varepsilon}}
+\DeclareUnicodeCharacter{00B2}{\textsuperscript{2}}
+\DeclareUnicodeCharacter{00B3}{\textsuperscript{3}}
+\DeclareUnicodeCharacter{2074}{\textsuperscript{4}}
+\DeclareUnicodeCharacter{2075}{\textsuperscript{5}}
+\DeclareUnicodeCharacter{2076}{\textsuperscript{6}}
+\DeclareUnicodeCharacter{1D4F}{\textsuperscript{k}}
+\DeclareUnicodeCharacter{1D62}{\textsubscript{i}}
+\DeclareUnicodeCharacter{2C7C}{\textsubscript{j}}
+\DeclareUnicodeCharacter{2096}{\textsubscript{k}}
+\DeclareUnicodeCharacter{2080}{\textsubscript{0}}
+\DeclareUnicodeCharacter{2082}{\textsubscript{2}}
+\DeclareUnicodeCharacter{208C}{\textsubscript{=}}
+\DeclareUnicodeCharacter{00B7}{\ensuremath{\cdot}}
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
+\DeclareUnicodeCharacter{221A}{\ensuremath{\surd}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}
+\DeclareUnicodeCharacter{226B}{\ensuremath{\gg}}
+\DeclareUnicodeCharacter{2308}{\ensuremath{\lceil}}
+\DeclareUnicodeCharacter{2309}{\ensuremath{\rceil}}
+\DeclareUnicodeCharacter{230A}{\ensuremath{\lfloor}}
+\DeclareUnicodeCharacter{230B}{\ensuremath{\rfloor}}
+\DeclareUnicodeCharacter{2026}{\ensuremath{\ldots}}
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}}
+\DeclareUnicodeCharacter{2260}{\ensuremath{\neq}}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{35mm}
+{\LARGE\bfseries Бие даалт №2\par}
+\vspace{4mm}
+{\Large\bfseries Графын хайлт, мөрийн хайлт ба хомхойлох алгоритм\par}
+\vspace{12mm}
+{\large Алгоритмын зохиомж ба шинжилгээ (F.CSM301)\par}
+\vspace{6mm}
+{\large A төвшин $\cdot$ Python, Java\par}
+\vfill
+{\large Оюутан: Б.~Билгүүн (\textbf{B190910014})\par}
+\vspace{3mm}
+{\large Багш: Д.~Батмөнх\par}
+\vspace{20mm}
+ШУТИС, МХТС $\cdot$ Улаанбаатар, 2026\par
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\section{Ерөнхий мэдээлэл}
+
+\subsection{Ажлын зорилго}
+Графын гүн ба гүехэн хайлт, тэмдэгт мөрийн хайлт болон хомхойлох алгоритмын зарчмыг хэрэгжүүлэх. A төвшний шаардлагын дагуу таван бодлогыг бүгдийг \textbf{Python} болон \textbf{Java} дээр бодож, B төвшний хоёр бодлогын гүйцэтгэлийг хомхойлох арга болон гүехэн хайлтаар \textbf{сайжруулав}. Бодлого бүрийн хугацаа, санах ойн зарцуулалтыг онолоор тооцоолж, бодит хэмжилтээр шалгав.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}Xll}
+\toprule
+\textbf{№} & \textbf{Бодлого} & \textbf{Төвшин} & \textbf{Арга} \\
+\midrule
+1 & Find the Index of the First Occurrence in a String (LeetCode 28) & C & KMP \\
+2 & Flood Fill (LeetCode 733) & C & гүехэн хайлт (BFS) \\
+3 & Assign Cookies (LeetCode 455) & C & хомхойлох \\
+4 & Jump Game II (LeetCode 45) & B $\rightarrow$ A & ДП $\rightarrow$ хомхойлох \\
+5 & Open the Lock (LeetCode 752) & B $\rightarrow$ A & BFS $\rightarrow$ хоёр талын BFS \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Файлын бүтэц}
+\begin{Verbatim}
+prj2/B190910014/
+├── python/src/         p1_str_str.py … p5_open_lock_improved.py
+├── python/tests/       test_problems.py (pytest)
+├── python/bench.py     хэмжилт
+├── java/src/main/...   StrStr.java … OpenLockImproved.java, Bench.java
+├── java/src/test/...   ProblemsTest.java (JUnit 5)
+├── report/             prj2_report.tex, prj2_report.pdf, make_tables.py, build.sh
+└── env_info.sh
+\end{Verbatim}
+LeetCode-д илгээхдээ Python-д \texttt{class Solution}-ийг шууд, Java-д классын нэрийг \texttt{Solution} болгож (\texttt{package} мөрийг хасаж) илгээнэ.
+
+\subsection{Тестийн ерөнхий үр дүн}
+Бодлого бүрийг LeetCode-ийн жишээ болон \textbf{өөр, энгийн аргатай тулгасан санамсаргүй тохиолдлоор} шалгав. Анхны ба сайжруулсан хувилбарыг мөн хооронд нь тулгав.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Бодлого} & \textbf{Шалгасан зүйл} \\
+\midrule
+1 & 3000 санамсаргүй мөр: KMP ба энгийн арга нь хариугаараа (зөвхөн тест дээр) \texttt{str.find} / \texttt{indexOf}-той таарсан \\
+2 & 300 санамсаргүй зураг: тогтмол цэг хүртэл давтах (Python) ба дахин дуудах DFS (Java) лавлах хариутай \\
+3 & 500 санамсаргүй тохиолдол: хоёр талт графын хамгийн их хослол (Кун)-той \\
+4 & 500 санамсаргүй массив: ДП, хомхойлох арга ба BFS ижил; n = 300, nums[i] = 300 үед ДП яг n(n−1)/2 алхам \\
+5 & 300 санамсаргүй тохиолдол (0–400 түгжээ): BFS ба хоёр талын BFS ижил хариутай \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Хэл} & \textbf{Команд} & \textbf{Үр дүн} \\
+\midrule
+Python & \texttt{cd python \&\& .venv/bin/pytest -v} & 28 passed \\
+Java & \texttt{cd java \&\& mvn test} & Tests run: 5, Failures: 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Санамсаргүй тулгалт нь \textbf{алдаа илрүүлсэн}: анхны BFS (5-р бодлого) зорилгыг түгжих хослолоос өмнө шалгадаг байсан тул зорилго өөрөө түгжих хослол үед −1-ийн оронд хариу буцааж байв. Шалгах дарааллыг сольж засаад, энэ тохиолдлыг тусгай тест болгон нэмэв.
+
+\subsection{Хэмжилтийн орчин ба арга}
+WSL2 Ubuntu 22.04, Intel Core i5-1334U (12 логик цөм, L2 7.5 MiB, L3 12 MiB), 7.6 GiB RAM, Python 3.10.12, OpenJDK 17.0.20.1 (\texttt{env\_info.sh}).
+\begin{itemize}
+\item \textbf{Хугацаа.} Нэг дуудалт 20 ms-ээс богино бол багцаар давтаж, нэг дуудалтын дунджийг гаргав. Python-д 3, Java-д 5 багцын медиан. Java-д эхлээд 3 удаа дуудаж JIT-ийг халаана.
+\item \textbf{Санах ой.} Python: \texttt{tracemalloc}-ийн \textbf{оргил} утга. Java: \texttt{ThreadMXBean}-ээр нэг дуудалтад \textbf{нийт хуваарилсан} санах ой. Оролтыг аль алинд нь оролцуулаагүй.
+\end{itemize}
+Хэмжилтийг дахин хийж тайланг шинэчлэх дараалал:
+\begin{Verbatim}
+cd python && python3 bench.py                          # -> out/results_python.tsv
+cd java && java -Xss64m -cp build com.prj2.Bench       # -> out/results_java.tsv
+cd report && python3 make_tables.py && ./build.sh      # хүснэгт -> .tex -> PDF
+\end{Verbatim}
+
+\section{Бодлого 1. Find the Index of the First Occurrence in a String (LeetCode 28)}
+
+\subsection{Зорилго}
+haystack мөрөнд needle мөр анх хаана орсныг (0-ээс эхэлсэн байрлал) олно. Ороогүй бол −1. Хэлний бэлэн хайлтын функц (\texttt{str.find}, \texttt{in}, \texttt{indexOf}) ашиглахгүй.
+
+\subsection{Алгоритмын санаа}
+\textbf{Энгийн арга} байрлал бүрээс needle-ийг тэмдэгт тэмдэгтээр харьцуулна. Тааралгүй бол дараагийн байрлалаас дахин эхэлнэ. Хамгийн муу үед (жишээ нь haystack = «aaa…ab», needle = «aa…ab») O(n·m).
+
+\textbf{Кнут–Моррис–Праттын (KMP) арга} нь тааралгүй болоход аль хэдийн таарсан хэсгийг дахин шалгахгүй. Үүний тулд needle-ийн угтвар бүрийн \textbf{хамгийн урт жинхэнэ угтвар = дагавар}-ын урт fail[i]-г урьдчилан тооцоолно. Жишээ нь needle = «abab» бол fail = [0, 0, 1, 2]. haystack-ийг нэг удаа гүйхдээ k тэмдэгт таарсан байхад тааралгүй болбол k-г fail[k − 1] болгож ухраана, харин haystack-ийн заагчийг ухраахгүй.
+
+\begin{Verbatim}
+def strStr(haystack, needle):
+    m = len(needle)
+    fail, k = [0] * m, 0
+    for i in range(1, m):                       # угтвар функц
+        while k > 0 and needle[i] != needle[k]:
+            k = fail[k - 1]
+        if needle[i] == needle[k]:
+            k += 1
+        fail[i] = k
+    k = 0
+    for i, ch in enumerate(haystack):           # хайлт
+        while k > 0 and ch != needle[k]:
+            k = fail[k - 1]
+        if ch == needle[k]:
+            k += 1
+            if k == m:
+                return i - m + 1
+    return -1
+\end{Verbatim}
+
+\subsection{Хэрэгжүүлэлт}
+\begin{itemize}
+\item \textbf{Python} (\texttt{p1\_str\_str.py}): \texttt{Solution} (KMP), \texttt{SolutionNaive} (харьцуулах энгийн арга).
+\item \textbf{Java} (\texttt{StrStr.java}): \texttt{strStr} (KMP), \texttt{strStrNaive}. Тэмдэгтийг \texttt{charAt}-аар уншиж, шинэ мөр үүсгэхгүй.
+\end{itemize}
+
+\subsection{Тестийн үр дүн}
+LeetCode-ийн жишээ («sadbutsad», «sad» → 0; «leetcode», «leeto» → −1) болон «mississippi», «issip» → 4, «aaaaab», «aab» → 3 зэрэг fail функцийг шалгах тохиолдлууд хоёр хувилбарт давсан. «ab» цагаан толгойтой 3000 санамсаргүй хос дээр хариу ижил.
+
+\subsection{Хугацаа}
+\textbf{KMP: Θ(n + m).} Хайлтын давталтад k нь алхам бүрд хамгийн ихдээ 1-ээр өснө (нийт ≤ n удаа), while давталт k-г дор хаяж 1-ээр бууруулна. k ≥ 0 тул нийт бууралт нийт өсөлтөөс хэтрэхгүй, өөрөөр хэлбэл while нийтдээ ≤ n удаа ажиллана (хорогдуулсан шинжилгээ). fail-ийг байгуулах нь үүнтэй адил Θ(m). \textbf{Энгийн арга} хамгийн муу үед (n − m + 1)·m харьцуулалт хийнэ.
+
+% BEGIN:p1
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rlrrrrrr}
+\toprule
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Python, ms}} & \multicolumn{2}{c}{\textbf{Java, ms}} & \multicolumn{2}{c}{\textbf{Санах ой, KB}} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8}
+\textbf{n} & \textbf{Оролт} & \textbf{KMP} & \textbf{энгийн} & \textbf{KMP} & \textbf{энгийн} & \textbf{\begin{tabular}[b]{@{}r@{}}Python \\ KMP\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java \\ KMP\end{tabular}} \\
+\midrule
+1\,000 & муу & 0.334 & 9.779 & 0.309 & 0.363 & 1.0 & 0.4 \\
+10\,000 & муу & 2.779 & 133.6 & 0.0646 & 1.432 & 1.0 & 0.4 \\
+100\,000 & муу & 38.7 & 1\,497 & 1.535 & 10.2 & 1.0 & 0.4 \\
+1\,000 & санамсаргүй & 0.172 & 0.184 & 0.0562 & 0.0392 & 1.0 & 0.4 \\
+10\,000 & санамсаргүй & 1.933 & 2.505 & 0.167 & 0.0728 & 1.0 & 0.4 \\
+100\,000 & санамсаргүй & 66.5 & 29.0 & 1.970 & 2.011 & 1.0 & 0.4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p1
+
+\textbf{Дүгнэлт.} Муу оролт дээр n = 10\textsuperscript{5}, m = 100 үед KMP нь Python-д \textbf{39 дахин}, Java-д \textbf{6.6 дахин} хурдан. Харин санамсаргүй текстэд энгийн аргын харьцуулалт ихэнхдээ эхний тэмдэгт дээр тасардаг тул дунджаар O(n) бөгөөд нэмэлт зардалгүйн улмаас Python-д KMP-ээс хурдан байна. Өөрөөр хэлбэл KMP-ийн давуу тал нь \textbf{хамгийн муу тохиолдлын баталгаа}. Java-гийн n = 10\textsuperscript{3} мөрийн хугацаа JIT бүрэн халаагүй үеийн эхний хэмжилт тул бусдаасаа их байна.
+
+\subsection{Санах ой}
+KMP нь fail массивт \textbf{Θ(m)} (m = 100 үед Java-д 0.4 KB), энгийн арга \textbf{Θ(1)} нэмэлт санах ой хэрэглэнэ. Аль аль нь haystack-ийг хуулахгүй.
+
+\section{Бодлого 2. Flood Fill (LeetCode 733)}
+
+\subsection{Зорилго}
+R × C зурагт (sr, sc) нүднээс эхлэн, ижил өнгөтэй, дээш доош зүүн баруун талаараа холбогдсон бүх нүдийг шинэ өнгөөр будна.
+
+\subsection{Алгоритмын санаа}
+Нүдийг графын орой, ижил өнгөтэй хөрш нүдийг ирмэг гэж үзвэл бодлого нь эхлэх оройгоос хүрэх бүх оройг олох \textbf{графын хайлт} болно. Гүехэн хайлт (BFS) хийж, нүдийг дараалалд \textbf{оруулах үедээ} будна. Ингэснээр будагдсан нүд хуучин өнгөтэй тэнцэхээ больж, дахин дараалалд орохгүй (тусдаа visited массив хэрэггүй). Шинэ өнгө хуучинтайгаа ижил бол шууд буцаана. Эс бөгөөс будсан нүд хуучин өнгөтэй хэвээр үлдэж, хайлт зогсохгүй.
+
+\begin{Verbatim}
+def floodFill(image, sr, sc, color):
+    old = image[sr][sc]
+    if old == color:
+        return image
+    image[sr][sc] = color
+    queue = deque([(sr, sc)])
+    while queue:
+        r, c = queue.popleft()
+        for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):
+            if 0 <= nr < rows and 0 <= nc < cols and image[nr][nc] == old:
+                image[nr][nc] = color
+                queue.append((nr, nc))
+    return image
+\end{Verbatim}
+
+\subsection{Хэрэгжүүлэлт}
+\begin{itemize}
+\item \textbf{Python} (\texttt{p2\_flood\_fill.py}): \texttt{Solution} (BFS, \texttt{deque}) ба \texttt{SolutionDfs} (тодорхой стектэй DFS). Дахин дуудах DFS нь 300 × 300 зурагт Python-ы стекийн хязгаарыг (≈ 1000) давдаг тул стек ашиглав.
+\item \textbf{Java} (\texttt{FloodFill.java}): дарааллыг R·C урттай \texttt{int[]} массиваар, нүдийг r·C + c гэж нэг тоогоор кодолно (объект үүсгэхгүй).
+\end{itemize}
+
+\subsection{Тестийн үр дүн}
+LeetCode-ийн хоёр жишээ болон 1–7 хэмжээтэй, 3 өнгөтэй 300 санамсаргүй зураг дээр BFS ба DFS лавлах хариутай таарсан. 300 × 300 зурагт DFS стекийн алдаагүй ажилласан.
+
+\subsection{Хугацаа}
+Нүд бүр дараалалд хамгийн ихдээ нэг удаа орж, 4 хөршөө шалгана: \textbf{Θ(R·C)} (хамгийн муу үед бүх нүд ижил өнгөтэй). Доорх хэмжилтэд бүх нүд ижил өнгөтэй (бүгдийг будна).
+
+% BEGIN:p2
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrrr}
+\toprule
+\textbf{Зураг} & \textbf{Нүд} & \textbf{\begin{tabular}[b]{@{}r@{}}Python, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python \\ нс/нүд\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java \\ нс/нүд\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python \\ оргил, KB\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java \\ хуваарилсан, KB\end{tabular}} \\
+\midrule
+50×50 & 2\,500 & 7.973 & 0.888 & 3189 & 355.3 & 0.2 & 9.8 \\
+200×200 & 40\,000 & 102.0 & 2.250 & 2551 & 56.3 & 0.2 & 156.3 \\
+1000×1000 & 1\,000\,000 & 1\,547 & 53.2 & 1547 & 53.2 & 41.5 & 3\,906 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p2
+
+Нэг нүдэнд ногдох хугацаа Python-д 1 500–3 200 нс, Java-д 50–350 нс орчим. Зураг томрох тусам энэ утга тогтворжиж (жижиг зурагт тогтмол зардал, Java-д JIT нөлөөлнө), хугацаа нүдний тоотой шугаман өсөж байна.
+
+\subsection{Санах ой}
+Дараалал нэгэн зэрэг BFS-ийн хамгийн ихдээ хоёр төвшнийг хадгална. Хамгийн муу үед \textbf{O(R·C)}. Java хувилбар R·C урттай массивыг урьдчилан хуваарилдаг (1000 × 1000: 3.9 MB = 4·10\textsuperscript{6} байт). Python-ы \texttt{deque} зөвхөн тухайн үеийн төвшнийг хадгална. Бүтэн зурагт эхлэх булангаас тархахад төвшин нь диагональ бөгөөд O(R + C) хэмжээтэй тул оргил санах ой бага. Мөн Python-д өмнө чөлөөлөгдсөн tuple-ийг дахин ашигладаг (free list) тул \texttt{tracemalloc} жижиг утга харуулж байна.
+
+\section{Бодлого 3. Assign Cookies (LeetCode 455)}
+
+\subsection{Зорилго}
+Хүүхэд бүр g\textsubscript{i} шуналтай, жигнэмэг бүр s\textsubscript{j} хэмжээтэй. s\textsubscript{j} ≥ g\textsubscript{i} бол хүүхэд сэтгэл ханамжтай. Хүүхэд бүрд хамгийн ихдээ нэг жигнэмэг өгөхөд сэтгэл ханамжтай хүүхдийн тоог хамгийн их болгоно.
+
+\subsection{Алгоритмын санаа}
+Хоёр массивыг эрэмбэлнэ. Жигнэмгийг жижгээс нь эхлэн авч, хангаж чадах бол одоогийн (шунал нь хамгийн бага) хүүхдэд өгнө. Эс бөгөөс энэ жигнэмгийг хэнд ч өгөх боломжгүй тул хаяна.
+
+\begin{Verbatim}
+def findContentChildren(g, s):
+    g.sort()
+    s.sort()
+    child = 0
+    for cookie in s:
+        if child < len(g) and cookie >= g[child]:
+            child += 1
+    return child
+\end{Verbatim}
+
+\textbf{Хомхойлох сонголт зөв (солих арга).} Хамгийн бага шуналтай g\textsubscript{1}-ийг хангах хамгийн жижиг жигнэмэг s\textsubscript{a} гэе. Оновчтой хуваарилалт O-д g\textsubscript{1} нь s\textsubscript{b}-г авсан бол (b ≠ a) s\textsubscript{a} ба s\textsubscript{b}-г сольж болно: s\textsubscript{a} ≤ s\textsubscript{b} тул s\textsubscript{a}-г авч байсан хүүхэд s\textsubscript{b}-ээр ч хангагдана. g\textsubscript{1} хүүхэд O-д юу ч аваагүй бол s\textsubscript{a}-г авсан хүүхдийг g\textsubscript{1}-ээр солиход тоо буурахгүй. Аль ч тохиолдолд g\textsubscript{1}–s\textsubscript{a} хостой оновчтой шийд оршин байна. Үлдсэн хэсэгт индукцээр. s\textsubscript{a}-аас жижиг жигнэмгүүд g\textsubscript{1}-ийг хангахгүй тул илүү их шуналтай хэнийг ч хангахгүй, хаяхад алдагдалгүй.
+
+\subsection{Хэрэгжүүлэлт}
+\textbf{Python} (\texttt{p3\_assign\_cookies.py}): \texttt{list.sort} (Timsort). \textbf{Java} (\texttt{AssignCookies.java}): \texttt{Arrays.sort} (\texttt{int[]}-д dual-pivot quicksort). Хоёулаа массивыг байрандаа эрэмбэлдэг.
+
+\subsection{Тестийн үр дүн}
+LeetCode-ийн жишээ ([1, 2, 3], [1, 1] → 1; [1, 2], [1, 2, 3] → 2) болон 0–8 хүүхэд, 0–8 жигнэмэгтэй 500 санамсаргүй тохиолдолд хоёр талт графын хамгийн их хослолыг Куны аргаар олсон хариутай таарсан.
+
+\subsection{Хугацаа ба санах ой}
+Эрэмбэлэлт \textbf{Θ(n lg n + m lg m)}, хоёр заагчийн хэсэг Θ(n + m). Нэмэлт санах ой нь Java-д Θ(lg n) (quicksort-ын стек), Python-ы Timsort-д хамгийн ихдээ n/2 заагч.
+
+% BEGIN:p3
+\begin{center}
+\footnotesize
+\begin{tabular}{rrrrrr}
+\toprule
+\textbf{n = m} & \textbf{Хариу} & \textbf{\begin{tabular}[b]{@{}r@{}}Python, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java, \\ ms\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Python \\ оргил, KB\end{tabular}} & \textbf{\begin{tabular}[b]{@{}r@{}}Java \\ хуваарилсан, KB\end{tabular}} \\
+\midrule
+10\,000 & 9902 & 12.9 & 3.442 & 38.2 & 0.0 \\
+100\,000 & 99965 & 128.0 & 20.6 & 389.3 & 0.0 \\
+1\,000\,000 & 999841 & 1\,172 & 256.5 & 3\,844 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p3
+
+n 10 дахин өсөхөд хугацаа Python-д 9–10, Java-д 6–12 дахин өсөж, n lg n-тэй нийцэж байна. Java-д хуваарилалт 0 (байрандаа эрэмбэлдэг). Python-ы оргил нь Timsort-ын түр массив (n = 10\textsuperscript{6}: 3.8 MB ≈ n/2 заагч × 8 байт).
+
+\section{Бодлого 4. Jump Game II (LeetCode 45)}
+
+\subsection{Зорилго}
+nums[i] нь i байрлалаас урагш хамгийн ихдээ хэдэн алхам үсэрч болохыг заана. 0-ээс n − 1-д хүрэх хамгийн цөөн үсрэлтийн тоог олно (хүрэх боломжтой гэж баталгаатай).
+
+\subsection{Алгоритмын санаа (B төвшин): динамик программчлал}
+dp[i] нь 0-ээс i-д хүрэх хамгийн цөөн үсрэлт. dp[0] = 0, i бүрээс хүрч болох j = i + 1, …, i + nums[i] байрлалыг dp[j] = min(dp[j], dp[i] + 1) гэж шинэчилнэ.
+
+\begin{Verbatim}
+def jump(nums):
+    n = len(nums)
+    dp = [n] * n
+    dp[0] = 0
+    for i in range(n - 1):
+        for j in range(i + 1, min(n, i + nums[i] + 1)):
+            dp[j] = min(dp[j], dp[i] + 1)
+    return dp[-1]
+\end{Verbatim}
+
+\textbf{Хугацаа ба санах ой.} Шинэчлэлийн тоо Σ min(nums[i], n − 1 − i) буюу \textbf{O(n · max nums)}, хамгийн муу үед \textbf{Θ(n\textsuperscript{2})} (nums[i] ≥ n үед яг n(n − 1)/2, тестээр шалгав). Санах ой Θ(n).
+
+\subsection{Сайжруулсан шийдэл (A төвшин): хомхойлох арга = далд гүехэн хайлт}
+Байрлалуудыг орой, i-ээс i + 1, …, i + nums[i] уруу ирмэг гэж үзвэл бодлого нь 0-ээс n − 1 хүртэлх \textbf{хамгийн богино зам}, өөрөөр хэлбэл BFS. Гол ажиглалт: k үсрэлтээр хүрч болох байрлалууд нь \textbf{тасралтгүй муж} [lo\textsubscript{k}, hi\textsubscript{k}] (i-д хүрч чадвал түүнээс өмнөх бүх байрлалд хүрч чадна). Иймд BFS-ийн дараалал хадгалах шаардлагагүй, хоёр хил хангалттай:
+\begin{center}
+hi\textsubscript{k+1} = max\{ i + nums[i] : i ≤ hi\textsubscript{k} \}.
+\end{center}
+Тиймээс төвшин бүрээс «хамгийн хол хүргэх» байрлалыг сонгох нь хомхойлох сонголт бөгөөд түүний зөв байдал нь BFS-ийн төвшний зөв байдлаас шууд гарна. Хомхойлох сонголтыг ашиглах болсон үндэслэл: бүх байрлалын хамгийн цөөн үсрэлтийг (dp) мэдэх шаардлагагүй, зөвхөн төвшний хил чухал.
+
+\begin{Verbatim}
+def jump(nums):
+    jumps = current_end = farthest = 0
+    for i in range(len(nums) - 1):
+        farthest = max(farthest, i + nums[i])
+        if i == current_end:          # k-р төвшин дууслаа
+            jumps += 1
+            current_end = farthest    # (k+1)-р төвшний хил
+            if current_end >= len(nums) - 1:
+                break
+    return jumps
+\end{Verbatim}
+
+Массивыг нэг гүйнэ: \textbf{Θ(n)} хугацаа, \textbf{Θ(1)} санах ой.
+
+\subsection{Хэрэгжүүлэлт ба тестийн үр дүн}
+\begin{itemize}
+\item Анхны: \texttt{p4\_jump\_game.py}, \texttt{JumpGame.java}.
+\item Сайжруулсан: \texttt{p4\_jump\_game\_improved.py}, \texttt{JumpGameImproved.java}.
+\end{itemize}
+Анхны хувилбар \texttt{steps} тоолуураар dp-гийн шинэчлэлийн тоог бүртгэнэ. LeetCode-ийн жишээ ([2, 3, 1, 1, 4] → 2, [2, 3, 0, 1, 4] → 2), [0] → 0 болон 1–40 урттай 500 санамсаргүй массив дээр ДП, хомхойлох арга, тусдаа бичсэн BFS гурвын хариу ижил.
+
+\subsection{Харьцуулалт}
+nums[i] ∈ [1, 1000] санамсаргүй (LeetCode-ийн хязгаар). Python-д n = 10\textsuperscript{5} үед ДП ≈ 5·10\textsuperscript{7} шинэчлэл (≈ 6 с) хийх тул хэмжээгүй.
+
+% BEGIN:p4
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrrrrr}
+\toprule
+\multicolumn{3}{c}{} & \multicolumn{2}{c}{\textbf{Python, ms}} & \multicolumn{2}{c}{\textbf{Java, ms}} & \multicolumn{2}{c}{\textbf{Python, KB}} \\
+\cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+\textbf{n} & \textbf{Үсрэлт} & \textbf{\begin{tabular}[b]{@{}r@{}}ДП-гийн \\ алхам\end{tabular}} & \textbf{ДП} & \textbf{хомхойлох} & \textbf{ДП} & \textbf{хомхойлох} & \textbf{ДП} & \textbf{хомхойлох} \\
+\midrule
+1\,000 & 2 & 330\,388 & 41.7 & 0.0447 & 2.787 & 0.0576 & 8.2 & 0.2 \\
+10\,000 & 11 & 4\,837\,907 & 582.4 & 0.771 & 7.085 & 0.142 & 78.5 & 0.2 \\
+100\,000 & 105 & 49\,985\,117 & — & 8.571 & 103.6 & 0.164 & — & 0.2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p4
+
+\textbf{Дүгнэлт.} ДП-гийн ажил n·(дундаж nums) ≈ 500n бол хомхойлох аргынх яг n − 1 алхам. n = 10\textsuperscript{4} үед Python-д \textbf{755 дахин}, Java-д n = 10\textsuperscript{5} үед \textbf{632 дахин} хурдан. Санах ой Θ(n) (Java-д 4n байт)-ээс Θ(1) болсон.
+
+\section{Бодлого 5. Open the Lock (LeetCode 752)}
+
+\subsection{Зорилго}
+4 дугуйтай цоож «0000»-оос эхэлнэ. Нэг алхамд нэг дугуйг нэгээр эргүүлнэ (9 → 0, 0 → 9). Түгжих хослол (deadends)-д орж болохгүй. Зорилгод хүрэх хамгийн цөөн алхмыг олно, хүрэх боломжгүй бол −1.
+
+\subsection{Алгоритмын санаа (B төвшин): гүехэн хайлт}
+Төлөв бүр (10\textsuperscript{4} ширхэг) нь орой, нэг алхмаар шилжих 8 төлөв нь хөрш. Ирмэгүүд жингүй тул \textbf{BFS} анх хүрсэн төвшин нь хамгийн цөөн алхам болно. Түгжих хослол уруу орохгүй, үзсэн төлөвийг дахин оруулахгүй.
+
+\begin{Verbatim}
+def openLock(deadends, target):
+    dead = set(deadends)
+    if "0000" in dead: return -1
+    if target == "0000": return 0
+    seen, queue = {"0000"}, deque([("0000", 0)])
+    while queue:
+        state, dist = queue.popleft()
+        for i in range(4):
+            for d in (-1, 1):
+                nxt = state[:i] + str((int(state[i]) + d) % 10) + state[i + 1:]
+                if nxt in seen or nxt in dead:
+                    continue
+                if nxt == target:
+                    return dist + 1
+                seen.add(nxt)
+                queue.append((nxt, dist + 1))
+    return -1
+\end{Verbatim}
+
+\textbf{Хугацаа ба санах ой.} Хамгийн ихдээ 10\textsuperscript{4} төлөв, тус бүрд 8 хөрш, хөрш бүрд 4 тэмдэгттэй мөр үүсгэж, толинд хайна: O(10\textsuperscript{4}·8·4). Санах ой Θ(10\textsuperscript{4}) (seen, дараалал).
+
+\subsection{Сайжруулсан шийдэл (A төвшин): хоёр талын гүехэн хайлт}
+\begin{enumerate}
+\item \textbf{Төлөвийг бүхэл тоогоор кодлох.} «0000»…«9999» нь 0…9999. Хөршийг 10-ын зэрэг p ∈ \{1000, 100, 10, 1\}-ийг нэмж, хасаж олно (орны цифр 9 бол +1 нь −9p, 0 бол −1 нь +9p). Мөр зүсэх, шинэ мөр үүсгэх, толь хайх зардал алга. Үзсэн ба түгжих төлөвийг 10\textsuperscript{4} урттай байт массивт хадгална.
+\item \textbf{Хоёр талаас хайх.} «0000» ба зорилгоос ээлжлэн BFS хийж, алхам бүрд \textbf{жижиг} хилийг нь нэг төвшин тэлнэ. Нэг талын хайлт нөгөө талын хүрсэн төлөвтэй уулзмагц хариу нь хоёр талын төвшний нийлбэр.
+\end{enumerate}
+Салбарлалт b (энд 8), хариу d бол нэг талын BFS ойролцоогоор $b^d$ төлөв, хоёр талынх $2b^{d/2}$ төлөв нээнэ. Мөн аль нэг тал түгжээгээр бүслэгдсэн бол тэр талын хил шууд хоосорч, хариу −1 гэдэг нь бараг тэр дороо тодорхой болно.
+
+\textbf{Зөв байдал.} Уулзсан y төлөвийг s тал d\textsubscript{s} төвшинд, нөгөө тал t ≤ d\textsubscript{o} төвшинд хүрсэн гэе. Хэрэв t < d\textsubscript{o} бол нөгөө тал (t + 1)-р төвшнийг тэлэхдээ y-ийн хөрш x-д аль хэдийн хүрч, уулзалтыг эрт илрүүлэх байсан. Иймд анхны уулзалт хамгийн богино замыг өгнө. 300 санамсаргүй тохиолдолд энгийн BFS-тэй тулгаж батлав.
+
+\subsection{Хэрэгжүүлэлт ба тестийн үр дүн}
+\begin{itemize}
+\item Анхны: \texttt{p5\_open\_lock.py}, \texttt{OpenLock.java} (Java-д төвшин тус бүрээр нь BFS, \texttt{HashSet<String>}).
+\item Сайжруулсан: \texttt{p5\_open\_lock\_improved.py}, \texttt{OpenLockImproved.java}.
+\end{itemize}
+Хоёулаа \texttt{expanded} тоолуураар тэлсэн төлөвийг бүртгэнэ. LeetCode-ийн 3 жишээ (6, 1, −1), «0000» түгжигдсэн, зорилго өөрөө түгжих хослол гэсэн тохиолдлууд болон 300 санамсаргүй тохиолдлыг давсан.
+
+\subsection{Харьцуулалт}
+% BEGIN:p5
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Тэлсэн төлөв}} & \multicolumn{2}{c}{\textbf{Python, ms}} & \multicolumn{2}{c}{\textbf{Java, ms}} & \multicolumn{2}{c}{\textbf{Python, KB}} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8} \cmidrule(lr){9-10}
+\textbf{Тохиолдол} & \textbf{Хариу} & \textbf{BFS} & \textbf{хоёр тал} & \textbf{BFS} & \textbf{хоёр тал} & \textbf{BFS} & \textbf{хоёр тал} & \textbf{BFS} & \textbf{хоёр тал} \\
+\midrule
+«5555», түгжээгүй & 20 & 9\,992 & 7\,491 & 47.2 & 12.3 & 18.2 & 1.339 & 1\,033 & 151.7 \\
+LeetCode жишээ 1 & 6 & 417 & 46 & 2.013 & 0.0848 & 1.355 & 0.264 & 78.0 & 24.2 \\
+500 санамсаргүй түгжээ & 8 & 1\,282 & 163 & 5.432 & 0.312 & 2.232 & 0.125 & 270.7 & 31.9 \\
+зорилгыг бүсэлсэн & -1 & 9\,991 & 2 & 49.6 & 0.0078 & 8.630 & 0.0190 & 1\,033 & 20.2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% END:p5
+
+\textbf{Дүгнэлт.}
+\begin{itemize}
+\item \textbf{LeetCode-ийн жишээ, санамсаргүй түгжээ:} тэлсэн төлөв 8–9 дахин цөөрч, хугацаа Python-д 17–24, Java-д 5–18 дахин буурсан.
+\item \textbf{«5555» (хамгийн хол, 20 алхам):} хариу бүх төлөвийн «төгсгөлд» байрладаг тул хоёр тал ч ихэнх төлөвийг нээнэ (9992 → 7491). Хурдсалт нь голчлон бүхэл тоон кодлолоос гарсан (Python 3.8, Java 13.6 дахин).
+\item \textbf{Бүслэгдсэн зорилго:} энгийн BFS бүх 9991 төлөвийг нээж байж −1 гэж мэддэг бол хоёр талын хайлт зорилгын талаас 1 алхам хийгээд хил хоосорсныг мэднэ (2 төлөв). Python-д \textbf{6 000 гаруй дахин} хурдан.
+\item \textbf{Санах ой:} Python-д 1 MB-аас 0.15 MB, Java-д 4.4 MB-аас 0.1 MB болж буурсан. String объект үүсгэхгүй, байт массив ашигласантай холбоотой.
+\end{itemize}
+
+\section{Дүгнэлт}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}Xll}
+\toprule
+\textbf{№} & \textbf{Бодлого, арга} & \textbf{Хугацаа} & \textbf{Нэмэлт санах ой} \\
+\midrule
+1 & strStr — энгийн & O(n·m) & Θ(1) \\
+1 & strStr — KMP & Θ(n + m) & Θ(m) \\
+2 & Flood Fill — BFS & Θ(R·C) & O(R·C) \\
+3 & Assign Cookies — хомхойлох & Θ(n lg n + m lg m) & Θ(lg n) … Θ(n) \\
+4 & Jump Game II — ДП & O(n · max nums) ≤ Θ(n\textsuperscript{2}) & Θ(n) \\
+4 & Jump Game II — хомхойлох (далд BFS) & Θ(n) & Θ(1) \\
+5 & Open the Lock — BFS & O(10\textsuperscript{4}·8·4) & Θ(10\textsuperscript{4}) \\
+5 & Open the Lock — хоёр талын BFS & O($2b^{d/2}$) төлөв & Θ(10\textsuperscript{4}) байт \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Гол дүгнэлтүүд:}
+\begin{enumerate}
+\item \textbf{Хомхойлох арга нь бүтцийн ажиглалт дээр тулгуурладаг.} Jump Game II-д «k үсрэлтээр хүрэх байрлалууд тасралтгүй муж» гэсэн ажиглалт BFS-ийн дарааллыг хоёр хувьсагч болгож, Θ(n\textsuperscript{2}) ДП-г Θ(n) болгосон. Assign Cookies-ийн хомхойлох сонголтыг солих аргаар баталсан.
+\item \textbf{Хамгийн муу тохиолдлын баталгаа чухал.} KMP санамсаргүй текстэд энгийн аргаас хурдан биш боловч муу оролтод 39 дахин хурдан.
+\item \textbf{Гүехэн хайлтын хурд нь нээх төлөвийн тоо ба нэг төлөвийн өртгөөс хамаарна.} Open the Lock-д хоёр талын хайлт төлөвийн тоог, бүхэл тоон кодлол нэг төлөвийн өртгийг багасгасан.
+\item \textbf{Санамсаргүй тулгалт алдааг илрүүлдэг.} Энгийн BFS-ийн «зорилго түгжигдсэн» алдааг сайжруулсан хувилбартай тулгах тест илрүүлсэн.
+\item \textbf{Python, Java хоёрын хандлага ижил, тогтмол үржүүлэгч өөр.} Java 2.6–52 дахин хурдан байсан ч хэмжээ өсөхөд хугацаа өсөх хурд хоёр хэлэнд ижил байв.
+\end{enumerate}
+
+\appendix
+\clearpage
+\section{Java хэрэгжүүлэлт}
+Python кодыг бодлого бүрийн «Алгоритмын санаа» хэсэгт үзүүлсэн. Доор Java шийдлүүдийг \texttt{java/\allowbreak{}src/\allowbreak{}main/\allowbreak{}java/\allowbreak{}com/\allowbreak{}prj2/} хавтаснаас бүтнээр нь оруулав.
+
+\subsection{1. strStr (\texttt{StrStr.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/StrStr.java}
+
+\subsection{2. Flood Fill (\texttt{FloodFill.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/FloodFill.java}
+
+\subsection{3. Assign Cookies (\texttt{AssignCookies.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/AssignCookies.java}
+
+\subsection{4. Jump Game II — анхны (\texttt{JumpGame.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/JumpGame.java}
+
+\subsection{4. Jump Game II — сайжруулсан (\texttt{JumpGameImproved.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/JumpGameImproved.java}
+
+\subsection{5. Open the Lock — анхны (\texttt{OpenLock.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/OpenLock.java}
+
+\subsection{5. Open the Lock — сайжруулсан (\texttt{OpenLockImproved.java})}
+\VerbatimInput[fontsize=\footnotesize]{../java/src/main/java/com/prj2/OpenLockImproved.java}
+
+\end{document}

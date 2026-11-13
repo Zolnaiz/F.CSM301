@@ -14,6 +14,7 @@
 | [Лаб 4](lab04/B190910014) | Динамик программчлал: ган саваа, матрицын цуваа, LCS, diff | [lab04_report.md](lab04/B190910014/lab04_report.md) | [!154](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/154) | ⏳ хүлээгдэж буй |
 | [Лаб 5](lab05/B190910014) | Хомхойлох алгоритм: ажиллагаа, үүргэвч, мөнгө, Хаффман, оновчтой кэш | [lab05_report.md](lab05/B190910014/lab05_report.md) | [!186](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/186) | ⏳ хүлээгдэж буй |
 | [Бие даалт 1](prj1/B190910014) | Хэсэгчлэх ба дахин дуудах арга, A түвшин (5 бодлого + 2 сайжруулалт) | [prj1_report.pdf](prj1/B190910014/report/prj1_report.pdf) | [!153](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/153) | ⏳ хүлээгдэж буй |
+| [Бие даалт 2](prj2/B190910014) | Графын хайлт, мөрийн хайлт, хомхойлох: KMP, Flood Fill, Cookies, Jump Game II, Open the Lock | [prj2_report.pdf](prj2/B190910014/report/prj2_report.pdf) | [!200](https://gitlab.com/batmunkh.d/f.csm301-2627/-/merge_requests/200) | ⏳ хүлээгдэж буй |
 
 Шалгуулах бэлтгэл: [шалгуулах_бэлтгэл.md](шалгуулах_бэлтгэл.md)
 
